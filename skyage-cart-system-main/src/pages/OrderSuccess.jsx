@@ -8,7 +8,7 @@ export default function OrderSuccess() {
   const orderId = location.state?.orderId || "N/A";
 
   return (
-    <div className="min-h-screen bg-[#f4efe6] flex justify-center items-center px-4">
+    <div className="min-h-screen bg-[#F3EED9] flex justify-center items-center px-4">
 
       <div className="bg-white w-full max-w-sm p-8 rounded-3xl shadow-2xl text-center space-y-5 border border-[#e6dfcf]">
 

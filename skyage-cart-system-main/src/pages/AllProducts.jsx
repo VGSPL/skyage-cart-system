@@ -72,7 +72,7 @@ export default function AllProducts() {
   })
 
   return (
-    <main className="container mx-auto px-2 sm:px-4 py-4 sm:py-8">
+    <main className="container mx-auto px-2 sm:px-4 py-4 sm:py-8 bg-[#F3EED9]">
       <h1 className="text-xs sm:text-lg md:text-2xl font-semibold mb-4">
         {t('allProductsHeader')}
       </h1>

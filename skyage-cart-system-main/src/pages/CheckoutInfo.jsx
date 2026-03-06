@@ -2,13 +2,14 @@ import { useNavigate } from "react-router-dom";
 export default function CheckoutInfo() {
    const navigate = useNavigate(); 
   return (
-    <div className="min-h-screen bg-gray-100 py-16 px-4">
-
+    <div className="min-h-screen bg-[#F3EED9] py-16 px-4">
+   
       <div className="max-w-2xl mx-auto bg-white rounded-xl shadow-xl p-6">
 
         <h2 className="text-2xl font-semibold text-gray-800">
           Customer Information
         </h2>
+        
         <p className="text-gray-500 mb-8">
           Enter your delivery details
         </p>
@@ -32,7 +33,7 @@ export default function CheckoutInfo() {
         </div>
 
         {/* Address */}
-        <div className="mt-8 flex justify-center">
+         <div className="mt-8">
           <label className="label">Address</label>
           <input
             type="text"
@@ -67,7 +68,8 @@ export default function CheckoutInfo() {
         <div className="mt-8">
           <button
   onClick={() => navigate("/checkout/payment")}
-  className="bg-teal-600 hover:bg-teal-700 text-white px-6 py-2 rounded-lg shadow-md transition"
+  
+   className="bg-[#147E9E] text-white px-4 py-2 rounded hover:bg-[#10657d] transition duration-300"
 >
   Continue to Payment →
 </button>

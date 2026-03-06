@@ -27,7 +27,7 @@ export default function CheckoutPayment() {
     <div
       style={{
         minHeight: "80vh",
-        background: "#f5f3e7",
+        background: "#F3EED9",
         padding: "50px 20px",
       }}
     >
@@ -97,6 +97,8 @@ export default function CheckoutPayment() {
 
           <button
             onClick={handleReview}
+             onMouseOver={(e) => (e.target.style.background = "#0b7285")}
+  onMouseOut={(e) => (e.target.style.background = "#1098ad")}  
             style={{
               marginTop: "20px",
               padding: "14px",
@@ -110,8 +112,9 @@ export default function CheckoutPayment() {
               fontWeight: "600",
             }}
           >
-            Review Order →
-          </button>
+           
+           Review Order →
+          </button> 
 
           <p style={{ marginTop: "15px", color: "gray" }}>
             🔒 100% Secure Payment

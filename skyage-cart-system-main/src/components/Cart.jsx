@@ -9,13 +9,12 @@ export default function Cart() {
 
 if (cart.length === 0) {
   return (
-    <div className="flex justify-center items-center min-h-[60vh]">
+    <div className="flex justify-center items-center min-h-[60vh] bg-[#F3EED9]">
       <div className="bg-gray-100 p-8 rounded-2xl shadow-md text-center max-w-md w-full">
         <h2 className="text-2xl font-semibold">
           Your Cart is Empty!
         </h2>
-
-        <p className="text-lg mt-2">
+       <p className="text-lg mt-2">
           You must add items to the cart before processed to checkout.
         </p>
       </div>
@@ -81,7 +80,7 @@ if (cart.length === 0) {
 
         <button
           onClick={() => navigate("/checkout/info")}
-          className="mt-4 bg-[#147E9E] text-white px-6 py-2 rounded"
+           className="mt-4 bg-[#147E9E] text-white px-6 py-2 rounded hover:bg-[#10657d] transition duration-300"
         >
           Proceed to Checkout
         </button>

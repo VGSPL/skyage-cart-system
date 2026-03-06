@@ -14,7 +14,7 @@ export default function CheckoutReview() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f4efe6] flex justify-center items-center py-16 px-4">
+    <div className="min-h-screen bg-[#F3EED9] flex justify-center items-center py-16 px-4">
       {/* MAIN CARD */}
       <div className="w-full max-w-md bg-[#f8f6f0] rounded-3xl shadow-2xl p-6 space-y-5 border border-[#e6dfcf]">
 

@@ -90,7 +90,8 @@ export default function HotSalesElectronics(){
               
               <button
                 onClick={() => addToCart(p)}
-                className="w-full mt-2 bg-blue-600 text-white py-2 rounded"
+        
+                className="w-full mt-2 bg-[#147E9E] text-white py-2 rounded hover:bg-[#10657d] active:scale-95 transition"
               >
                 Add To Cart
               </button>

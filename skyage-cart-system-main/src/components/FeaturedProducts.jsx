@@ -100,12 +100,12 @@ export default function FeaturedProducts(){
               <h3 className="text-xs sm:text-sm font-medium line-clamp-2">{p.title}</h3>
               <p className="mt-auto text-[#147E9E] font-semibold text-xs sm:text-sm">₹{p.price}</p>
               <Link to={`/product/${p.id}`} className="inline-block mt-1 sm:mt-2 text-[10px] sm:text-sm text-[#147E9E]">{t('view')}</Link>
-              <button
-      onClick={() => addToCart(p)}
-      className="w-full mt-2 bg-blue-600 text-white py-1 rounded text-sm"
-    >
-      Add To Cart
-    </button>
+                <button
+   onClick={() => addToCart(p)}
+  className="w-full mt-2 bg-[#147E9E] text-white py-1 rounded text-sm hover:bg-[#10657d] active:scale-95 transition"
+>
+  Add To Cart
+</button>
             </article>
           ))}
         </div>
