@@ -3,12 +3,14 @@ import { useState, useRef, useEffect } from 'react'
 import { useLanguage } from '../contexts/LanguageProvider'
 import { useCart } from '../contexts/CartContext'
 import CTAIcon from '../config/ctaIcon'
+import { useAuth } from "../contexts/AuthContext" 
 
 export default function Header() {
   const [id, setId] = useState('1')
   const navigate = useNavigate()
   const { t, lang, setLang } = useLanguage()
   const { cart } = useCart()
+  const { isAuth, logout } = useAuth()
 
   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0)
 
@@ -85,9 +87,21 @@ export default function Header() {
               <option value="hi">हिंदी</option>
             </select>
              
-             <Link to="/register" className="text-xs hover:text-[#147E9E]">
-              Sign In
-            </Link> 
+             {isAuth ? (
+  <button
+    onClick={() => {
+      logout()
+      navigate("/login")
+    }}
+    className="text-xs hover:text-[#147E9E]"
+  >
+    Logout
+  </button>
+) : (
+  <Link to="/login" className="text-xs hover:text-[#147E9E]">
+    Sign In
+  </Link>
+)}
             </nav>   
 </div>  
 </div>   

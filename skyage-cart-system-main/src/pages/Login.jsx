@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { useAuth } from "../contexts/AuthContext";
 import './Login.css';
 
 const Login = () => {
@@ -14,6 +15,7 @@ const Login = () => {
   const [remember, setRemember] = useState(false);
 
   const navigate = useNavigate();
+  const { login } = useAuth(); 
 
   const handleChange = (e) => {
     setFormData({
@@ -54,9 +56,8 @@ const Login = () => {
       storedUser.password === formData.password
     ) {
 
-      localStorage.setItem("isAuth", "true");
-
-      navigate("/dashboard");
+      login(); 
+      navigate("/");  
 
     } else {
       setError("Invalid email or password");

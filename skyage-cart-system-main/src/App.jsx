@@ -1,9 +1,11 @@
+import { AuthProvider } from "./contexts/AuthContext";
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
 import Header from './components/Header'
 import Footer from './components/Footer'
+import ProtectedRoute from "./components/ProtectedRoute"; 
 import Login from './pages/Login'
 import Register from './pages/Register'
-import Dashboard from "./pages/Dashboard";
+
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 
@@ -29,7 +31,6 @@ function AppContent() {
     const location = useLocation()
 
     const hideHeaderFooter =
-        location.pathname === "/dashboard" ||
         location.pathname === "/login" ||
         location.pathname === "/register" ||
         location.pathname === "/forgot-password" ||
@@ -44,6 +45,7 @@ function AppContent() {
 
                 {/* HOME PAGE */}
                 <Route path="/" element={
+                      <ProtectedRoute>
                     <>
                         <section className="bg-[#e6dfb8] py-10 px-6">
                             <h1 className="text-2xl font-semibold">
@@ -59,6 +61,7 @@ function AppContent() {
                         <HotSalesElectronics />
                         <HotSalesClothing />
                     </>
+                    </ProtectedRoute>
                 } />
 
                 {/* OTHER PAGES */}
@@ -70,8 +73,7 @@ function AppContent() {
 
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
-                <Route path="/dashboard" element={<Dashboard />} />
-
+               
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
 
@@ -91,9 +93,12 @@ function AppContent() {
 export default function App() {
     return (
         <CartProvider>
-            <BrowserRouter>
-                <AppContent />
+        <AuthProvider> 
+                
+            <BrowserRouter>    
+            <AppContent />
             </BrowserRouter>
+            </AuthProvider>
         </CartProvider>
     )
 }

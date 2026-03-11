@@ -22,7 +22,7 @@ const Register = () => {
     const isAuth = localStorage.getItem("isAuth");
 
     if (isAuth) {
-      navigate("/dashboard");
+      navigate("/");
     }
   }, [navigate]);
 
