@@ -1,4 +1,3 @@
-
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useState, useRef, useEffect } from 'react'
 import { useLanguage } from '../contexts/LanguageProvider'
@@ -43,8 +42,8 @@ export default function Header() {
   }
 
   return (
-    <header ref={headerRef} className="bg-white shadow-sm">
-
+    // <header ref={headerRef} className="bg-white shadow-sm">
+       <header ref={headerRef} className="bg-white shadow-sm relative z-50">
       {/* Top Bar */}
       <div className="border-b">
         <div className="container mx-auto flex items-center justify-end gap-6 h-14">
@@ -85,15 +84,16 @@ export default function Header() {
               <option value="mr">मराठी</option>
               <option value="hi">हिंदी</option>
             </select>
+             
+             <Link to="/register" className="text-xs hover:text-[#147E9E]">
+              Sign In
+            </Link> 
+            </nav>   
+</div>  
+</div>   
 
-            <Link to="/signin" className="text-xs hover:text-[#147E9E]">
-              {t('signIn')}
-            </Link>
 
-          </nav>
-        </div>
-      </div>
-
+          
       {/* Main Header */}
       <div className="container mx-auto flex items-center justify-between h-16 px-4">
 
@@ -102,7 +102,7 @@ export default function Header() {
             {t('brand')}
           </Link>
 
-          <nav className="hidden md:flex gap-4">
+          <div className="hidden md:flex gap-4">
             <Link to="/products" className="hover:text-[#147E9E]">
               {t('allProducts')}
             </Link>
@@ -112,7 +112,7 @@ export default function Header() {
             <Link to="/about" className="hover:text-[#147E9E]">
               {t('aboutUs')}
             </Link>
-          </nav>
+          </div>
         </div>
 
         <div className="flex items-center gap-3">
@@ -211,7 +211,7 @@ export default function Header() {
           </div>
         </div>
       </div>
-
+      
     </header>
   )
 }
