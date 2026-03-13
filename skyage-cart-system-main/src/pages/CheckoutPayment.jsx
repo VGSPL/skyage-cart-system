@@ -77,8 +77,8 @@ export default function CheckoutPayment() {
               {method === "Cash on Delivery"
                 ? "Cash on Delivery"
                 : method === "UPI"
-                ? "UPI Payment"
-                : "Card Payment"}
+                  ? "UPI Payment"
+                  : "Card Payment"}
 
               {method === "Cash on Delivery" && (
                 <p
@@ -97,8 +97,8 @@ export default function CheckoutPayment() {
 
           <button
             onClick={handleReview}
-             onMouseOver={(e) => (e.target.style.background = "#0b7285")}
-  onMouseOut={(e) => (e.target.style.background = "#1098ad")}  
+            onMouseOver={(e) => (e.target.style.background = "#0b7285")}
+            onMouseOut={(e) => (e.target.style.background = "#1098ad")}
             style={{
               marginTop: "20px",
               padding: "14px",
@@ -112,9 +112,9 @@ export default function CheckoutPayment() {
               fontWeight: "600",
             }}
           >
-           
-           Review Order →
-          </button> 
+
+            Review Order →
+          </button>
 
           <p style={{ marginTop: "15px", color: "gray" }}>
             🔒 100% Secure Payment
@@ -122,8 +122,8 @@ export default function CheckoutPayment() {
         </div>
 
         {/* ================= ORDER SUMMARY ================= */}
-        
-<div
+
+        <div
           style={{
             flex: "1 1 400px",
             background: "#fff",
@@ -160,13 +160,13 @@ export default function CheckoutPayment() {
                     {item.title}
                   </p>
                   <small style={{ color: "gray" }}>
-                Qty: {item.quantity}
-                </small>
-                  
+                    Qty: {item.quantity}
+                  </small>
+
                 </div>
               </div>
               <strong>
-              ₹{item.price * item.quantity}
+                ₹{item.price * item.quantity}
               </strong>
             </div>
           ))}

@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from "../contexts/AuthContext";
 import './Login.css';
+import loginIllustration from '../assets/2152026891.jpg';
+import logo from '../assets/Logo 2.png';
 
 const Login = () => {
 
@@ -15,7 +17,7 @@ const Login = () => {
   const [remember, setRemember] = useState(false);
 
   const navigate = useNavigate();
-  const { login } = useAuth(); 
+  const { login } = useAuth();
 
   const handleChange = (e) => {
     setFormData({
@@ -56,8 +58,8 @@ const Login = () => {
       storedUser.password === formData.password
     ) {
 
-      login(); 
-      navigate("/");  
+      login();
+      navigate("/home");
 
     } else {
       setError("Invalid email or password");
@@ -67,11 +69,20 @@ const Login = () => {
 
   return (
     <div className="auth-wrapper">
-
+      <div className="auth-illustration">
+        <div className="illustration-content">
+          <img
+            src={loginIllustration}
+            alt="Shopping Illustration"
+            className="illustration-image"
+          />
+        </div>
+      </div>
       <div className="auth-form-container">
         <div className="auth-form-content">
 
           <div className="auth-header">
+            <img src={logo} alt="Logo" className="auth-logo" />
             <h2>Welcome back</h2>
             <p className="auth-subtitle">
               Welcome back! Please enter your details.
@@ -85,7 +96,6 @@ const Login = () => {
             className="auth-form"
             autoComplete="off"
           >
-
             <div className="form-group">
               <label>Email</label>
               <input
@@ -122,7 +132,10 @@ const Login = () => {
                 <span>Remember for 30 days</span>
               </label>
 
-              <Link to="/forgot-password">Forgot password?</Link>
+
+              <Link className="forgot-link" to="/forgot-password">
+                Forgot password?
+              </Link>
             </div>
 
             <button

@@ -2,9 +2,11 @@ import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { getProduct } from '../services/api'
 import { useLanguage } from '../contexts/LanguageProvider'
+import { useCart } from '../contexts/CartContext'
 
 export default function Product(){
   const { t } = useLanguage()
+  const { addToCart } = useCart() 
   const { id } = useParams()
   const [product, setProduct] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -34,6 +36,12 @@ export default function Product(){
           <p className="mt-2 sm:mt-3 text-xs sm:text-sm md:text-base text-gray-600">{product.description}</p>
           <p className="mt-3 sm:mt-4 text-[#147E9E] font-bold text-sm sm:text-lg md:text-xl">₹{product.price}</p>
           <p className="mt-1 sm:mt-2 text-xs sm:text-sm text-gray-500">{t('category')}: {product.category}</p>
+          <button
+            onClick={() => addToCart(product)}
+             className="mt-4 bg-[#147E9E] text-white px-4 py-2 rounded hover:bg-[#10657d] active:scale-95 transition"
+     >
+            Add to Cart
+         </button>
         </div>
       </div>
     </main>

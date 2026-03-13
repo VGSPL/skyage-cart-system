@@ -10,29 +10,29 @@ const ForgotPassword = () => {
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  const user = JSON.parse(localStorage.getItem("user"));
+    const user = JSON.parse(localStorage.getItem("user"));
 
-  if (!email.trim()) {
-    alert("Please enter your email");
-    return;
-  }
-      if (user && user.email === email) {
+    if (!email.trim()) {
+      alert("Please enter your email");
+      return;
+    }
+    if (user && user.email === email) {
 
-  
-  localStorage.setItem("resetEmail", email);
 
-  alert(`Password reset link sent to ${email}`);
+      localStorage.setItem("resetEmail", email);
 
-  navigate("/reset-password");
+      alert(`Password reset link sent to ${email}`);
 
-} else {
+      navigate("/reset-password");
 
-  alert("Email not found");
+    } else {
 
-}
-};
+      alert("Email not found");
+
+    }
+  };
 
   return (
     <div
@@ -45,14 +45,14 @@ const ForgotPassword = () => {
       }}
     >
       <div
-          className="auth-form-container forgot-card"
+        className="auth-form-container forgot-card"
         style={{ maxWidth: "400px", width: "100%" }}
       >
         <div
           style={{
             padding: "2rem",
             borderRadius: "10px",
-            
+
           }}
         >
           <h2 style={{ textAlign: "center", marginBottom: "0.5rem" }}>

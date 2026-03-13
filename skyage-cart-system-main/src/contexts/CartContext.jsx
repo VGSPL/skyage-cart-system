@@ -47,26 +47,26 @@ export function CartProvider({ children }) {
   };
 
   // const subtotal = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
-// const discount = subtotal * 0.1;
-// const finalTotal = subtotal - discount;
-const finalTotal = cart.reduce((acc, item) => acc + Number(item.price) * item.quantity, 0);
+  // const discount = subtotal * 0.1;
+  // const finalTotal = subtotal - discount;
+  const finalTotal = cart.reduce((acc, item) => acc + Number(item.price) * item.quantity, 0);
 
   return (
     <CartContext.Provider
       value={{
         cart,
-  setCart,
-  addToCart,
-  increaseQty,
-  decreaseQty,
-  removeItem,
-  // subtotal,
-  // discount,
-  finalTotal,
-  customerInfo,
-  setCustomerInfo,
-  paymentMethod,
-  setPaymentMethod
+        setCart,
+        addToCart,
+        increaseQty,
+        decreaseQty,
+        removeItem,
+        // subtotal,
+        // discount,
+        finalTotal,
+        customerInfo,
+        setCustomerInfo,
+        paymentMethod,
+        setPaymentMethod
       }}
     >
       {children}

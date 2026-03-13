@@ -5,6 +5,7 @@ import Footer from './components/Footer'
 import ProtectedRoute from "./components/ProtectedRoute"; 
 import Login from './pages/Login'
 import Register from './pages/Register'
+import LandingPage from './pages/LandingPage'
 
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
@@ -31,6 +32,7 @@ function AppContent() {
     const location = useLocation()
 
     const hideHeaderFooter =
+        location.pathname === "/" ||
         location.pathname === "/login" ||
         location.pathname === "/register" ||
         location.pathname === "/forgot-password" ||
@@ -42,9 +44,9 @@ function AppContent() {
             {!hideHeaderFooter && <Header />}
 
             <Routes>
-
+                <Route path="/" element={<LandingPage />} />
                 {/* HOME PAGE */}
-                <Route path="/" element={
+                <Route path="/home" element={
                       <ProtectedRoute>
                     <>
                         <section className="bg-[#e6dfb8] py-10 px-6">
@@ -102,3 +104,10 @@ export default function App() {
         </CartProvider>
     )
 }
+
+
+
+
+
+
+

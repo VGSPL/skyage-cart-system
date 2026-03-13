@@ -3,7 +3,7 @@ import { submitConsultantRequest } from '../services/api'
 import { useLanguage } from '../contexts/LanguageProvider'
 import ConsultantAside from '../components/ConsultantAside'
 
-export default function Consultant(){
+export default function Consultant() {
   const { t } = useLanguage()
   const [name, setName] = useState('')
   const [productService, setProductService] = useState('')
@@ -12,14 +12,14 @@ export default function Consultant(){
   const [message, setMessage] = useState('')
   const [status, setStatus] = useState(null)
 
-  async function handleSubmit(e){
+  async function handleSubmit(e) {
     e.preventDefault()
     setStatus('loading')
-    try{
+    try {
       const res = await submitConsultantRequest({ name, productService, mobile, email, message })
       setStatus({ ok: true, id: res.id })
       setName(''); setProductService(''); setMobile(''); setEmail(''); setMessage('')
-    }catch(err){
+    } catch (err) {
       setStatus({ ok: false, error: err.message })
     }
   }
@@ -33,25 +33,25 @@ export default function Consultant(){
           <h2 style={{ fontFamily: 'Poppins, sans-serif', fontSize: 'clamp(14px, 4vw, 26px)', fontWeight: 600 }} className="mb-4 sm:mb-6">TELL US YOUR REQUIREMENT</h2>
           <div>
             <label className="block text-xs sm:text-sm font-medium">{t('name')}</label>
-            <input value={name} onChange={e=>setName(e.target.value)} className="mt-1 block w-full border rounded px-2 sm:px-3 py-1 sm:py-2 text-xs sm:text-sm" required />
+            <input value={name} onChange={e => setName(e.target.value)} className="mt-1 block w-full border rounded px-2 sm:px-3 py-1 sm:py-2 text-xs sm:text-sm" required />
           </div>
           <div>
             <label className="block text-xs sm:text-sm font-medium">Enter Product/Service Name</label>
-            <input value={productService} onChange={e=>setProductService(e.target.value)} className="mt-1 block w-full border rounded px-2 sm:px-3 py-1 sm:py-2 text-xs sm:text-sm" required />
+            <input value={productService} onChange={e => setProductService(e.target.value)} className="mt-1 block w-full border rounded px-2 sm:px-3 py-1 sm:py-2 text-xs sm:text-sm" required />
           </div>
           <div className="flex gap-2 sm:gap-3">
             <div className="flex-1">
               <label className="block text-xs sm:text-sm font-medium">{t('mobileNumber')}</label>
-              <input value={mobile} onChange={e=>setMobile(e.target.value)} type="tel" className="mt-1 block w-full border rounded px-2 sm:px-3 py-1 sm:py-2 text-xs sm:text-sm" required />
+              <input value={mobile} onChange={e => setMobile(e.target.value)} type="tel" className="mt-1 block w-full border rounded px-2 sm:px-3 py-1 sm:py-2 text-xs sm:text-sm" required />
             </div>
             <div className="flex-1">
               <label className="block text-xs sm:text-sm font-medium">{t('email')}</label>
-              <input value={email} onChange={e=>setEmail(e.target.value)} type="email" className="mt-1 block w-full border rounded px-2 sm:px-3 py-1 sm:py-2 text-xs sm:text-sm" required />
+              <input value={email} onChange={e => setEmail(e.target.value)} type="email" className="mt-1 block w-full border rounded px-2 sm:px-3 py-1 sm:py-2 text-xs sm:text-sm" required />
             </div>
           </div>
           <div>
             <label className="block text-xs sm:text-sm font-medium">{t('message')}</label>
-            <textarea value={message} onChange={e=>setMessage(e.target.value)} className="mt-1 block w-full border rounded px-2 sm:px-3 py-1 sm:py-2 text-xs sm:text-sm" rows={5} required />
+            <textarea value={message} onChange={e => setMessage(e.target.value)} className="mt-1 block w-full border rounded px-2 sm:px-3 py-1 sm:py-2 text-xs sm:text-sm" rows={5} required />
           </div>
           <div className="flex items-center gap-2 sm:gap-3">
             <button className="bg-[#147E9E] text-white px-3 sm:px-4 py-1 sm:py-2 rounded text-xs sm:text-sm">{t('sendRequest')}</button>
