@@ -1,0 +1,153 @@
+body{
+background:#F3EED9;
+font-family: Arial, sans-serif;
+}
+
+.letter-wrapper{
+display:flex;
+justify-content:center;
+padding:40px;
+}
+
+.letter-card{
+width:820px;
+background:white;
+position:relative;
+box-shadow:0 4px 15px rgba(0,0,0,0.1);
+}
+
+/* LEFT BLUE STRIPE */
+
+.left-strip{
+position:absolute;
+left:0;
+top:0;
+bottom:0;
+width:40px;
+background:#0c2d57;
+}
+
+/* HEADER */
+
+.header{
+background:#3b7ea5;
+color:white;
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:40px 40px 40px 80px;
+}
+
+.header-text h1{
+margin:0;
+font-size:34px;
+}
+
+.header-text p{
+margin-top:6px;
+letter-spacing:2px;
+}
+
+.header-photo img{
+width:110px;
+height:110px;
+border-radius:50%;
+border:4px solid white;
+object-fit:cover;
+}
+
+/* CONTENT */
+
+.content{
+padding:40px 70px;
+line-height:1.7;
+color:#333;
+font-size:15px;
+}
+
+.password{
+margin-bottom:20px;
+}
+
+.dear{
+margin-bottom:15px;
+}
+
+.section-title{
+margin-top:20px;
+}
+
+/* BULLET POINTS */
+
+.ref-list{
+list-style-type: disc;
+margin-left:25px;
+margin-top:10px;
+}
+
+.ref-list li{
+margin-bottom:8px;
+}
+
+/* REF LINK */
+
+.center-text{
+text-align:center;
+margin-top:10px;
+}
+
+.ref-link{
+text-align:center;
+color:#1a73e8;
+font-weight:bold;
+margin-bottom:20px;
+}
+
+/* FOUNDER */
+
+.founder{
+margin-top:20px;
+}
+
+.company{
+margin-bottom:25px;
+}
+
+/* FOOTER */
+
+.footer{
+display:flex;
+justify-content:space-between;
+padding:30px 70px;
+}
+
+.signature{
+text-align:center;
+}
+
+.signature img{
+width:120px;
+margin-bottom:5px;
+}
+
+/* BUTTON */
+
+.update-btn-wrapper{
+text-align:center;
+padding-bottom:0px;
+
+}
+
+.update-btn{
+background:#0c2d57;
+color:white;
+border:none;
+padding:12px 28px;
+font-size:16px;
+border-radius:6px;
+cursor:pointer;
+}
+
+.update-btn:hover{
+background:#174a8b;
+}

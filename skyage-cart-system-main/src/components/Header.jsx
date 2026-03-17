@@ -44,7 +44,7 @@ export default function Header() {
   }
 
   return (
-    // <header ref={headerRef} className="bg-white shadow-sm">
+    
        <header ref={headerRef} className="bg-white shadow-sm relative z-50">
       {/* Top Bar */}
       <div className="border-b">

@@ -6,10 +6,10 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Login from './pages/Login'
 import Register from './pages/Register'
 import LandingPage from './pages/LandingPage'
-
+import WelcomeLetter from "./pages/WelcomeLetter";
+import UpdateProfile from "./pages/UpdateProfile";
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
-
 import FeaturedProducts from './components/FeaturedProducts'
 import HotSalesElectronics from './components/HotSalesElectronics'
 import HotSalesClothing from './components/HotSalesClothing'
@@ -18,7 +18,6 @@ import Product from './pages/Product'
 import Consultant from './pages/Consultant'
 import About from './pages/About'
 import Cart from './components/Cart'
-
 import CheckoutInfo from './pages/CheckoutInfo'
 import CheckoutPayment from './pages/CheckoutPayment'
 import CheckoutReview from './pages/CheckoutReview'
@@ -30,13 +29,17 @@ import { CartProvider } from './contexts/CartContext'
 function AppContent() {
 
     const location = useLocation()
+     
 
     const hideHeaderFooter =
         location.pathname === "/" ||
         location.pathname === "/login" ||
         location.pathname === "/register" ||
         location.pathname === "/forgot-password" ||
-        location.pathname === "/reset-password"
+        location.pathname === "/reset-password"  ||
+        location.pathname === "/welcome-letter"  ||
+        location.pathname === "/update-profile" 
+        
 
     return (
         <div className="min-h-screen flex flex-col bg-light-blue">
@@ -75,7 +78,8 @@ function AppContent() {
 
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
-               
+                <Route path="/welcome-letter" element={<WelcomeLetter />} />
+                <Route path="/update-profile" element={<UpdateProfile />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
 

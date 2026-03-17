@@ -11,11 +11,6 @@ export default function HotSalesElectronics(){
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
-  
-  // const addToCart = (product) => {
-  //   alert(product.title + " added to cart")
-  // }
-
   const { addToCart } = useCart();
   <button
   onClick={() => addToCart(p)}
