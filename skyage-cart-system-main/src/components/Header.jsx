@@ -3,9 +3,10 @@ import { useState, useRef, useEffect } from 'react'
 import { useLanguage } from '../contexts/LanguageProvider'
 import { useCart } from '../contexts/CartContext'
 import CTAIcon from '../config/ctaIcon'
-import { useAuth } from "../contexts/AuthContext" 
+import { useAuth } from "../contexts/AuthContext"
 
 export default function Header() {
+
   const [id, setId] = useState('1')
   const navigate = useNavigate()
   const { t, lang, setLang } = useLanguage()
@@ -44,11 +45,13 @@ export default function Header() {
   }
 
   return (
-    
-       <header ref={headerRef} className="bg-white shadow-sm relative z-50">
+
+    <header ref={headerRef} className="bg-white shadow-sm relative z-50">
+
       {/* Top Bar */}
       <div className="border-b">
         <div className="container mx-auto flex items-center justify-end gap-6 h-14">
+
           <nav className="flex items-center gap-6 text-xs">
 
             {/* Get App */}
@@ -66,8 +69,6 @@ export default function Header() {
               to="/cart"
               className="relative flex flex-col items-center text-gray-700 hover:text-[#147E9E]"
             >
-              
- 
               <span>{t('cart')}</span>
               {totalItems > 0 && (
                 <span className="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded-full">
@@ -86,28 +87,43 @@ export default function Header() {
               <option value="mr">मराठी</option>
               <option value="hi">हिंदी</option>
             </select>
-             
-             {isAuth ? (
-  <button
-    onClick={() => {
-      logout()
-      navigate("/login")
-    }}
-    className="text-xs hover:text-[#147E9E]"
-  >
-    Logout
-  </button>
-) : (
-  <Link to="/login" className="text-xs hover:text-[#147E9E]">
-    Sign In
-  </Link>
-)}
-            </nav>   
-</div>  
-</div>   
+
+            {/* Profile + Login Logout */}
+
+            {isAuth ? (
+
+              <>
+                <button
+                  onClick={() => navigate("/profile")}
+                  className="text-xs hover:text-[#147E9E]"
+                >
+                  User Profile
+                </button>
+
+                <button
+                  onClick={() => {
+                    logout()
+                    navigate("/login")
+                  }}
+                  className="text-xs hover:text-[#147E9E]"
+                >
+                  Logout
+                </button>
+              </>
+
+            ) : (
+
+              <Link to="/login" className="text-xs hover:text-[#147E9E]">
+                Sign In
+              </Link>
+
+            )}
+
+          </nav>
+        </div>
+      </div>
 
 
-          
       {/* Main Header */}
       <div className="container mx-auto flex items-center justify-between h-16 px-4">
 
@@ -152,7 +168,8 @@ export default function Header() {
 
       </div>
 
-      
+
+      {/* Banner */}
       <div
         className="w-full"
         style={{
@@ -225,7 +242,7 @@ export default function Header() {
           </div>
         </div>
       </div>
-      
+
     </header>
   )
 }

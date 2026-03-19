@@ -7,7 +7,7 @@ import logo from '../assets/Logo 1.png';
 const Register = () => {
 
   const [formData, setFormData] = useState({
-    name: '',
+    fullName: '',
     email: '',
     password: '',
     confirm_password: '',
@@ -26,7 +26,7 @@ const Register = () => {
     const isAuth = localStorage.getItem("isLoggedIn");
 
     if (isAuth) {
-      navigate("/dashboard");
+      navigate("/welcome-letter");
     }
 
   }, [navigate]);
@@ -44,7 +44,7 @@ const Register = () => {
     setError('');
     setLoading(true);
 
-    const nameParts = formData.name.trim().split(' ');
+    const nameParts = formData.fullName.trim().split(' ');
     const firstName = nameParts[0];
     const lastName = nameParts.length > 1 ? nameParts.slice(1).join(' ') : '';
 
@@ -61,6 +61,7 @@ const Register = () => {
     }
 
     const userData = {
+      fullName: formData.fullName,
       email: formData.email,
       first_name: firstName,
       last_name: lastName || 'User',
@@ -75,7 +76,8 @@ const Register = () => {
     setLoading(false);
 
 
-    navigate('/login');
+    // navigate('/login');
+    navigate('/welcome-letter');
   };
 
   return (
@@ -112,8 +114,8 @@ const Register = () => {
               <label>Name</label>
               <input
                 type="text"
-                name="name"
-                value={formData.name}
+                name="fullName"
+                value={formData.fullName}
                 onChange={handleChange}
                 placeholder="Ex. John Doe"
                 required
@@ -186,6 +188,17 @@ const Register = () => {
 };
 
 export default Register;
+
+
+
+
+
+
+
+
+
+
+
 
 
 

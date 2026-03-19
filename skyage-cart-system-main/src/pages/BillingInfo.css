@@ -1,0 +1,83 @@
+.bank-page {
+    background: #F3EED9;
+    min-height: 100vh;
+    padding: 50px;
+}
+
+.bank-page .title {
+    text-align: center;
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 30px;
+}
+
+.form-box {
+    background: white;
+    max-width: 450px;
+    margin: auto;
+    padding: 35px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+.form-box h3 {
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.form-box form {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-box label {
+    margin-top: 14px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.form-box input,
+.form-box select {
+    margin-top: 6px;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    background: white;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+    outline: none;
+    transition: 0.3s;
+}
+
+.form-box input:focus,
+.form-box select:focus {
+    border: 1px solid #28a745;
+    box-shadow: 0 0 6px rgba(40, 167, 69, 0.25);
+}
+
+.form-box .submit-btn {
+    margin-top: 25px;
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 13px;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.form-box .submit-btn:hover {
+    background: #218838;
+}
+
+.bank-page .back-link {
+    display: block;
+    text-align: center;
+    margin-top: 22px;
+    color: #2c6da4;
+    font-size: 14px;
+    text-decoration: none;
+}

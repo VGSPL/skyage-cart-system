@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import "./UpdateProfile.css";
 
 export default function UpdateProfile() {
+
+  const navigate = useNavigate();
 
   const [user, setUser] = useState({
     fullName: "",
@@ -38,12 +41,15 @@ export default function UpdateProfile() {
 
     const updatedData = {
       ...user,
-      profile
+      ...profile
     };
 
-    localStorage.setItem("profileData", JSON.stringify(updatedData));
+    localStorage.setItem("user", JSON.stringify(updatedData));
+    localStorage.setItem("isLoggedIn", "true");
+    // alert("Profile Updated Successfully");
+    // navigate("/home");
+    navigate("/home", { replace: true });
 
-    alert("Profile Updated Successfully");
   };
 
   return (
@@ -145,7 +151,12 @@ export default function UpdateProfile() {
             Update Profile
           </button>
 
-          <button className="cancel-btn" type="button">
+
+          <button
+            className="cancel-btn"
+            type="button"
+            onClick={() => navigate("/home")}
+          >
             Cancel
           </button>
 
@@ -155,3 +166,14 @@ export default function UpdateProfile() {
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
+
+

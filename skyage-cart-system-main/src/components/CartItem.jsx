@@ -1,7 +1,7 @@
 function CartItem({ item, increaseQty, decreaseQty, removeItem }) {
   return (
     <div className="cart-item">
-      
+
       <div>
         <h4>{item.name}</h4>
         <p>₹{item.price}</p>
@@ -13,7 +13,7 @@ function CartItem({ item, increaseQty, decreaseQty, removeItem }) {
         <button onClick={() => increaseQty(item.id)}>+</button>
       </div>
 
-      <button 
+      <button
         className="remove-btn"
         onClick={() => removeItem(item.id)}
       >

@@ -2,12 +2,18 @@ import { AuthProvider } from "./contexts/AuthContext";
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
 import Header from './components/Header'
 import Footer from './components/Footer'
-import ProtectedRoute from "./components/ProtectedRoute"; 
+import ProtectedRoute from "./components/ProtectedRoute";
 import Login from './pages/Login'
+import UserProfile from "./pages/UserProfile";
+import Wallet from "./pages/Wallet";
+import BillingInfo from "./pages/BillingInfo";
+import Orders from "./pages/OrderHistory";
+import Shipping from "./pages/ShippingInfo";
 import Register from './pages/Register'
 import LandingPage from './pages/LandingPage'
 import WelcomeLetter from "./pages/WelcomeLetter";
 import UpdateProfile from "./pages/UpdateProfile";
+
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import FeaturedProducts from './components/FeaturedProducts'
@@ -29,17 +35,17 @@ import { CartProvider } from './contexts/CartContext'
 function AppContent() {
 
     const location = useLocation()
-     
+
 
     const hideHeaderFooter =
         location.pathname === "/" ||
         location.pathname === "/login" ||
         location.pathname === "/register" ||
         location.pathname === "/forgot-password" ||
-        location.pathname === "/reset-password"  ||
-        location.pathname === "/welcome-letter"  ||
-        location.pathname === "/update-profile" 
-        
+        location.pathname === "/reset-password" ||
+        location.pathname === "/welcome-letter" ||
+        location.pathname === "/update-profile"
+
 
     return (
         <div className="min-h-screen flex flex-col bg-light-blue">
@@ -50,22 +56,22 @@ function AppContent() {
                 <Route path="/" element={<LandingPage />} />
                 {/* HOME PAGE */}
                 <Route path="/home" element={
-                      <ProtectedRoute>
-                    <>
-                        <section className="bg-[#e6dfb8] py-10 px-6">
-                            <h1 className="text-2xl font-semibold">
-                                Welcome
-                            </h1>
-                            <p className="mt-2 text-gray-700">
-                                Use the navigation to browse products or request consultant services.
-                            </p>
-                        </section>
+                    <ProtectedRoute>
+                        <>
+                            <section className="bg-[#e6dfb8] py-10 px-6">
+                                <h1 className="text-2xl font-semibold">
+                                    Welcome
+                                </h1>
+                                <p className="mt-2 text-gray-700">
+                                    Use the navigation to browse products or request consultant services.
+                                </p>
+                            </section>
 
-                        <FeaturedProducts />
-                        <Consultant />
-                        <HotSalesElectronics />
-                        <HotSalesClothing />
-                    </>
+                            <FeaturedProducts />
+                            <Consultant />
+                            <HotSalesElectronics />
+                            <HotSalesClothing />
+                        </>
                     </ProtectedRoute>
                 } />
 
@@ -77,9 +83,18 @@ function AppContent() {
                 <Route path="/cart" element={<Cart />} />
 
                 <Route path="/login" element={<Login />} />
+                <Route path="/profile" element={<UserProfile />} />
+                <Route path="/wallet" element={<Wallet />} />
+                <Route path="/update-profile" element={<UpdateProfile />} />
+
+                <Route path="/billing" element={<BillingInfo />} />
+
+                <Route path="/shipping" element={<Shipping />} />
+
+                <Route path="/orders" element={<Orders />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/welcome-letter" element={<WelcomeLetter />} />
-                <Route path="/update-profile" element={<UpdateProfile />} />
+               
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
 
@@ -99,11 +114,11 @@ function AppContent() {
 export default function App() {
     return (
         <CartProvider>
-        <AuthProvider> 
-                
-            <BrowserRouter>    
-            <AppContent />
-            </BrowserRouter>
+            <AuthProvider>
+
+                <BrowserRouter>
+                    <AppContent />
+                </BrowserRouter>
             </AuthProvider>
         </CartProvider>
     )
