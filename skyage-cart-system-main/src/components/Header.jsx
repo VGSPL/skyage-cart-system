@@ -12,6 +12,15 @@ export default function Header() {
   const { t, lang, setLang } = useLanguage()
   const { cart } = useCart()
   const { isAuth, logout } = useAuth()
+  const [userName, setUserName] = useState("")
+
+  useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem("user"))
+
+    if (storedUser && storedUser.fullName) {
+      setUserName(storedUser.fullName)
+    }
+  }, [])
 
   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0)
 
@@ -88,18 +97,30 @@ export default function Header() {
               <option value="hi">हिंदी</option>
             </select>
 
-            {/* Profile + Login Logout */}
 
             {isAuth ? (
 
               <>
-                <button
-                  onClick={() => navigate("/profile")}
-                  className="text-xs hover:text-[#147E9E]"
-                >
-                  User Profile
-                </button>
 
+                <div
+
+                  onClick={() => navigate("/profile")}
+                  className="flex items-center gap-2 cursor-pointer hover:text-[#147E9E]"
+                >
+
+                  <img
+                    src="/profile.png"
+                    alt="profile"
+                    className="w-7 h-7 rounded-full border"
+                  />
+
+                  <span className="text-xs font-medium">
+                    {userName}
+                  </span>
+
+                </div>
+
+                {/* Logout */}
                 <button
                   onClick={() => {
                     logout()
@@ -109,6 +130,7 @@ export default function Header() {
                 >
                   Logout
                 </button>
+
               </>
 
             ) : (
@@ -128,7 +150,8 @@ export default function Header() {
       <div className="container mx-auto flex items-center justify-between h-16 px-4">
 
         <div className="flex items-center gap-4">
-          <Link to="/" className="text-xl font-semibold text-[#147E9E]">
+
+          <Link to={isAuth ? "/home" : "/"} className="text-xl font-semibold text-[#147E9E]">
             {t('brand')}
           </Link>
 
@@ -246,3 +269,11 @@ export default function Header() {
     </header>
   )
 }
+
+
+
+
+
+
+
+

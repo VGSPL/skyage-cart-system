@@ -35,15 +35,13 @@ const UserProfile = () => {
       <div className="profile-box">
 
         <div className="profile-top">
-
           <img
-            className="profile-img"
-            src="/profile.png"
+            className="profile-img cursor-pointer"
+            src={user.profileImage || "/profile.png"}
             alt="profile"
+            onClick={() => navigate("/update-profile")}
           />
-
-          <h3 className="name">{user.name}</h3>
-
+          <h3 className="name">{user.fullName}</h3>
           <p className="email">{user.email}</p>
 
         </div>

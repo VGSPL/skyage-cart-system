@@ -1,6 +1,6 @@
-.order-page-clean {
+ .order-page-clean {
   min-height: 100vh;
-  background-color: #f5f5f5;
+  background-color: #F3EED9;
   padding: 2rem 1rem;
   display: flex;
   justify-content: center;
@@ -30,7 +30,7 @@
   padding: 8px 16px;
   border: none;
   border-radius: 8px;
-  background-color: #6c63ff;
+  background-color: #147E9E;
   color: #fff;
   font-weight: 500;
   cursor: pointer;
@@ -38,7 +38,7 @@
 }
 
 .btn.back-btn:hover {
-  background-color: #5848c2;
+  background-color: #126b86;
 }
 
 .order-list-clean {
@@ -104,4 +104,14 @@
   .btn.back-btn {
     width: 100%;
   }
-}
+}  
+
+
+
+
+
+
+
+
+
+

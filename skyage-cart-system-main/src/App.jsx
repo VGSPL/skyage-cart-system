@@ -13,6 +13,7 @@ import Register from './pages/Register'
 import LandingPage from './pages/LandingPage'
 import WelcomeLetter from "./pages/WelcomeLetter";
 import UpdateProfile from "./pages/UpdateProfile";
+import ProfilePhotoUpdate from "./pages/ProfilePhotoUpdate";
 
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
@@ -43,8 +44,7 @@ function AppContent() {
         location.pathname === "/register" ||
         location.pathname === "/forgot-password" ||
         location.pathname === "/reset-password" ||
-        location.pathname === "/welcome-letter" ||
-        location.pathname === "/update-profile"
+        location.pathname === "/welcome-letter"
 
 
     return (
@@ -59,6 +59,7 @@ function AppContent() {
                     <ProtectedRoute>
                         <>
                             <section className="bg-[#e6dfb8] py-10 px-6">
+
                                 <h1 className="text-2xl font-semibold">
                                     Welcome
                                 </h1>
@@ -83,10 +84,23 @@ function AppContent() {
                 <Route path="/cart" element={<Cart />} />
 
                 <Route path="/login" element={<Login />} />
-                <Route path="/profile" element={<UserProfile />} />
+
+                <Route path="/profile" element={
+                    <ProtectedRoute>
+                        <UserProfile />
+                    </ProtectedRoute>
+                } />
                 <Route path="/wallet" element={<Wallet />} />
                 <Route path="/update-profile" element={<UpdateProfile />} />
 
+                <Route
+                    path="/profile-photo-update"
+                    element={
+                        <ProtectedRoute>
+                            <ProfilePhotoUpdate />
+                        </ProtectedRoute>
+                    }
+                />
                 <Route path="/billing" element={<BillingInfo />} />
 
                 <Route path="/shipping" element={<Shipping />} />
@@ -94,7 +108,7 @@ function AppContent() {
                 <Route path="/orders" element={<Orders />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/welcome-letter" element={<WelcomeLetter />} />
-               
+
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
 

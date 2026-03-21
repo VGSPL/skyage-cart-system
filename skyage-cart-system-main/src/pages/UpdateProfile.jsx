@@ -46,9 +46,7 @@ export default function UpdateProfile() {
 
     localStorage.setItem("user", JSON.stringify(updatedData));
     localStorage.setItem("isLoggedIn", "true");
-    // alert("Profile Updated Successfully");
-    // navigate("/home");
-    navigate("/home", { replace: true });
+    navigate("/profile-photo-update", { replace: true });
 
   };
 
@@ -156,6 +154,7 @@ export default function UpdateProfile() {
             className="cancel-btn"
             type="button"
             onClick={() => navigate("/home")}
+
           >
             Cancel
           </button>
@@ -166,6 +165,10 @@ export default function UpdateProfile() {
     </div>
   );
 }
+
+
+
+
 
 
 

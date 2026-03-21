@@ -14,41 +14,41 @@ const ResetPassword = () => {
       alert("Please enter new password");
       return;
     }
-        const user = JSON.parse(localStorage.getItem("user"));
-const resetEmail = localStorage.getItem("resetEmail");
+    const user = JSON.parse(localStorage.getItem("user"));
+    const resetEmail = localStorage.getItem("resetEmail");
 
-if (user && user.email === resetEmail) {
+    if (user && user.email === resetEmail) {
 
-  user.password = password;
+      user.password = password;
 
-   localStorage.setItem("user", JSON.stringify(user));
+      localStorage.setItem("user", JSON.stringify(user));
 
-  localStorage.removeItem("resetEmail");
+      localStorage.removeItem("resetEmail");
 
-  alert("Password updated successfully");
+      alert("Password updated successfully");
 
-  navigate("/login");
+      navigate("/login");
 
-} else {
+    } else {
 
-  alert("User not found");
+      alert("User not found");
 
-}
+    }
   };
 
   return (
     <div
       className="auth-wrapper"
-      
+
     >
 
-        <div
-         className="auth-form-container"
-        >  
+      <div
+        className="auth-form-container"
+      >
 
-          <div 
-           className="auth-form-content"
-          > 
+        <div
+          className="auth-form-content"
+        >
 
           <h2
             style={{

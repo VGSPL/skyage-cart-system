@@ -7,7 +7,7 @@ export default function CheckoutReview() {
   const { cart, finalTotal, customerInfo, paymentMethod, setCart } = useCart();
 
   const handlePlaceOrder = () => {
-    setCart([]); // Clear cart after order
+    setCart([]); 
     navigate("/order-success", {
       state: { orderId: Date.now() },
     });

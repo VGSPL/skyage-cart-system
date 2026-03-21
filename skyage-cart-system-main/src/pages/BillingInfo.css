@@ -59,7 +59,7 @@
 
 .form-box .submit-btn {
     margin-top: 25px;
-    background: #28a745;
+    background: #147E9E;
     color: white;
     border: none;
     padding: 13px;
@@ -70,7 +70,7 @@
 }
 
 .form-box .submit-btn:hover {
-    background: #218838;
+    background: #126b86;
 }
 
 .bank-page .back-link {
