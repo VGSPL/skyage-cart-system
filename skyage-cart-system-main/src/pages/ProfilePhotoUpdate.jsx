@@ -31,15 +31,24 @@ export default function ProfilePhotoUpdate() {
   return (
     <div className="profile-update-page">
 
-      {/* LEFT SIDE TITLE */}
-      <div className="profile-left-side">
-        <h1>Profile Picture / <br /> Name Update</h1>
-      </div>
-
-      {/* RIGHT SIDE FORM */}
       <div className="profile-right-side">
+
+
+        <h2 className="form-heading">
+          Profile Picture / Name Update
+        </h2>
         <div className="profile-form-card">
+
+
           <form onSubmit={handleSubmit}>
+
+            <div className="image-preview">
+              <img
+                src={image || "/profile.png"}
+                alt="profile"
+              />
+            </div>
+
             <label>First name:</label>
             <input
               type="text"
@@ -58,38 +67,30 @@ export default function ProfilePhotoUpdate() {
             <input type="email" value={email} disabled />
 
             <label>Uniqueid:</label>
-
-            <input
-              type="text"
-              value={uniqueid}
-              disabled
-            />
+            <input type="text" value={uniqueid} disabled />
 
             <label>Profile Picture:</label>
-            <div className="image-preview">
-              {image && <img src={image} alt="profile" />}
-            </div>
             <input type="file" accept="image/*" onChange={handleImageChange} />
 
             <button className="update-btn">Update Details</button>
             <button type="button" className="password-btn">Update Password</button>
+
             <button
               className="cancel-btn"
               type="button"
               onClick={() => navigate("/update-profile")}
-
             >
               Cancel
             </button>
 
           </form>
+
         </div>
       </div>
 
     </div>
   );
 }
-
 
 
 

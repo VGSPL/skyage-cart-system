@@ -28,6 +28,8 @@ import Cart from './components/Cart'
 import CheckoutInfo from './pages/CheckoutInfo'
 import CheckoutPayment from './pages/CheckoutPayment'
 import CheckoutReview from './pages/CheckoutReview'
+import PaymentMethod from "./pages/PaymentMethod";
+
 import OrderSuccess from './pages/OrderSuccess'
 
 import { CartProvider } from './contexts/CartContext'
@@ -116,6 +118,7 @@ function AppContent() {
                 <Route path="/checkout/info" element={<CheckoutInfo />} />
                 <Route path="/checkout/payment" element={<CheckoutPayment />} />
                 <Route path="/checkout/review" element={<CheckoutReview />} />
+                <Route path="/payment-method" element={<PaymentMethod />} />
                 <Route path="/order-success" element={<OrderSuccess />} />
 
             </Routes>

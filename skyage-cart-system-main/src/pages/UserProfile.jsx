@@ -39,7 +39,8 @@ const UserProfile = () => {
             className="profile-img cursor-pointer"
             src={user.profileImage || "/profile.png"}
             alt="profile"
-            onClick={() => navigate("/update-profile")}
+            // onClick={() => navigate("/update-profile")}
+            onClick={() => navigate("/profile-photo-update")}
           />
           <h3 className="name">{user.fullName}</h3>
           <p className="email">{user.email}</p>
@@ -122,6 +123,23 @@ const UserProfile = () => {
 };
 
 export default UserProfile;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

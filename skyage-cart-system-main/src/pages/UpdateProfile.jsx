@@ -6,6 +6,9 @@ export default function UpdateProfile() {
 
   const navigate = useNavigate();
 
+  // const [editMode, setEditMode] = useState(true);
+  const [editMode, setEditMode] = useState(false);
+
   const [user, setUser] = useState({
     fullName: "",
     email: "",
@@ -22,11 +25,19 @@ export default function UpdateProfile() {
   });
 
   useEffect(() => {
+
     const storedUser = JSON.parse(localStorage.getItem("user"));
+    const savedProfile = JSON.parse(localStorage.getItem("profileInfo"));
 
     if (storedUser) {
       setUser(storedUser);
     }
+
+    if (savedProfile) {
+      setProfile(savedProfile);
+      setEditMode(false);
+    }
+
   }, []);
 
   const handleChange = (e) => {
@@ -45,123 +56,170 @@ export default function UpdateProfile() {
     };
 
     localStorage.setItem("user", JSON.stringify(updatedData));
-    localStorage.setItem("isLoggedIn", "true");
-    navigate("/profile-photo-update", { replace: true });
+    localStorage.setItem("profileInfo", JSON.stringify(profile));
+    alert("Profile updated successfully");
 
+    setEditMode(false);
   };
 
   return (
+
     <div className="profile-container">
 
       <h2 className="title">Update Your Profile Information</h2>
 
       <div className="profile-card">
 
-        <form onSubmit={handleSubmit}>
+        {!editMode ? (
 
-          <h3>Your Information</h3>
+          <div className="profile-view">
 
-          <label>Full Name</label>
-          <input type="text" value={user.fullName} readOnly />
+            <h3>Your Information</h3>
 
-          <label>Email</label>
-          <input type="email" value={user.email} readOnly />
+            <p><b>Full Name:</b> {user.fullName}</p>
+            <p><b>Email:</b> {user.email}</p>
 
-          <p className="note">
-            This information was provided during registration and cannot be changed here.
-          </p>
+            <h3>Profile Information</h3>
 
-          <h3>Profile Information</h3>
+            <p><b>Phone:</b> {profile.phone}</p>
+            <p><b>Address 1:</b> {profile.address1}</p>
+            <p><b>Address 2:</b> {profile.address2}</p>
+            <p><b>City:</b> {profile.city}</p>
+            <p><b>State:</b> {profile.state}</p>
+            <p><b>Zip:</b> {profile.zip}</p>
+            <p><b>Country:</b> {profile.country}</p>
 
-          <label>Phone</label>
-          <input
-            type="text"
-            placeholder="Phone"
-            name="phone"
-            onChange={handleChange}
-          />
+            <button
+              className="update-btn"
+              onClick={() => setEditMode(true)}
+            >
+              Update
+            </button>
 
-          <label>Address Line 1</label>
-          <input
-            type="text"
-            placeholder="Address 1"
-            name="address1"
-            onChange={handleChange}
-          />
-
-          <label>Address Line 2</label>
-          <input
-            type="text"
-            placeholder="Address 2"
-            name="address2"
-            onChange={handleChange}
-          />
-
-          <div className="row">
-
-            <div>
-              <label>City</label>
-              <input
-                type="text"
-                placeholder="City"
-                name="city"
-                onChange={handleChange}
-              />
-            </div>
-
-            <div>
-              <label>State</label>
-              <input
-                type="text"
-                placeholder="State"
-                name="state"
-                onChange={handleChange}
-              />
-            </div>
+            <button
+              className="cancel-btn"
+              onClick={() => navigate("/home")}
+            >
+              ← Back to Profile
+            </button>
 
           </div>
 
-          <div className="row">
+        ) : (
 
-            <div>
-              <label>Zip Code</label>
-              <input
-                type="text"
-                placeholder="Zip Code"
-                name="zip"
-                onChange={handleChange}
-              />
+          <form onSubmit={handleSubmit}>
+
+            <h3>Your Information</h3>
+
+            <label>Full Name</label>
+            <input type="text" value={user.fullName} readOnly />
+
+            <label>Email</label>
+            <input type="email" value={user.email} readOnly />
+
+            <p className="note">
+              This information was provided during registration and cannot be changed here.
+            </p>
+
+            <h3>Profile Information</h3>
+
+            <label>Phone</label>
+            <input
+              type="text"
+              placeholder="Phone"
+              name="phone"
+              value={profile.phone}
+              onChange={handleChange}
+            />
+
+            <label>Address Line 1</label>
+            <input
+              type="text"
+              placeholder="Address 1"
+              name="address1"
+              value={profile.address1}
+              onChange={handleChange}
+            />
+
+            <label>Address Line 2</label>
+            <input
+              type="text"
+              placeholder="Address 2"
+              name="address2"
+              value={profile.address2}
+              onChange={handleChange}
+            />
+
+            <div className="row">
+
+              <div>
+                <label>City</label>
+                <input
+                  type="text"
+                  placeholder="City"
+                  name="city"
+                  value={profile.city}
+                  onChange={handleChange}
+                />
+              </div>
+
+              <div>
+                <label>State</label>
+                <input
+                  type="text"
+                  placeholder="State"
+                  name="state"
+                  value={profile.state}
+                  onChange={handleChange}
+                />
+              </div>
+
             </div>
 
-            <div>
-              <label>Country</label>
-              <input
-                type="text"
-                placeholder="Country"
-                name="country"
-                onChange={handleChange}
-              />
+            <div className="row">
+
+              <div>
+                <label>Zip Code</label>
+                <input
+                  type="text"
+                  placeholder="Zip Code"
+                  name="zip"
+                  value={profile.zip}
+                  onChange={handleChange}
+                />
+              </div>
+
+              <div>
+                <label>Country</label>
+                <input
+                  type="text"
+                  placeholder="Country"
+                  name="country"
+                  value={profile.country}
+                  onChange={handleChange}
+                />
+              </div>
+
             </div>
 
-          </div>
+            <button className="update-btn" type="submit">
+              Update Profile
+            </button>
 
-          <button className="update-btn" type="submit">
-            Update Profile
-          </button>
+            <button
+              className="cancel-btn"
+              type="button"
+              onClick={() => navigate("/home")}
+            >
+              Cancel
+            </button>
 
+          </form>
 
-          <button
-            className="cancel-btn"
-            type="button"
-            onClick={() => navigate("/home")}
-
-          >
-            Cancel
-          </button>
-
-        </form>
+        )}
 
       </div>
+
     </div>
   );
 }

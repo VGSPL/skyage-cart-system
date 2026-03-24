@@ -14,6 +14,7 @@ body {
     background: white;
     position: relative;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+     margin-bottom: 30px;
 }
 
 /* LEFT BLUE STRIPE */
@@ -134,7 +135,9 @@ body {
 
 .update-btn-wrapper {
     text-align: center;
-    padding-bottom: 0px;
+    padding:10px 0;
+    margin-left:0 auto; 
+    display: block;
 
 }
 
@@ -142,12 +145,16 @@ body {
     background: #0c2d57;
     color: white;
     border: none;
-    padding: 12px 28px;
-    font-size: 16px;
+    padding: 6px 12px;
+    font-size: 14px;
     border-radius: 6px;
     cursor: pointer;
+    font-weight: 600;  
+    display: inline-block;   
+    width: auto;     
 }
 
 .update-btn:hover {
     background: #174a8b;
 }
+
