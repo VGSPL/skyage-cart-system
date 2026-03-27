@@ -4,32 +4,32 @@ import { getAllProducts } from '../services/api'
 import { useLanguage } from '../contexts/LanguageProvider'
 import { useCart } from "../contexts/CartContext";
 
-export default function FeaturedProducts(){
+export default function FeaturedProducts() {
   const { t } = useLanguage()
   const location = useLocation()
   const [items, setItems] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
-    const { addToCart } = useCart(); 
+  const { addToCart } = useCart();
 
-  useEffect(()=>{
+  useEffect(() => {
     let mounted = true
     getAllProducts()
-      .then(data => { if(mounted){ setItems((data || [])) } })
+      .then(data => { if (mounted) { setItems((data || [])) } })
       .catch(err => setError(err.message))
-      .finally(()=> mounted && setLoading(false))
-    return ()=> mounted = false
-  },[])
+      .finally(() => mounted && setLoading(false))
+    return () => mounted = false
+  }, [])
 
-  if(loading) return <div className="container mx-auto px-2 sm:px-4 py-3 sm:py-6 text-xs sm:text-sm">{t('loadingProducts')}</div>
-  if(error) return <div className="container mx-auto px-2 sm:px-4 py-3 sm:py-6 text-xs sm:text-sm">{t('errorPrefix')} {error}</div>
+  if (loading) return <div className="container mx-auto px-2 sm:px-4 py-3 sm:py-6 text-xs sm:text-sm">{t('loadingProducts')}</div>
+  if (error) return <div className="container mx-auto px-2 sm:px-4 py-3 sm:py-6 text-xs sm:text-sm">{t('errorPrefix')} {error}</div>
 
   const params = new URLSearchParams(location.search)
   const q = (params.get('search') || '').trim().toLowerCase()
   const category = (params.get('category') || '').trim().toLowerCase()
 
   // if searching or filtering by category, show filtered results
-  if(q || category){
+  if (q || category) {
     const filtered = (items || []).filter(p => {
       const title = (p.title || '').toLowerCase()
       const desc = (p.description || '').toLowerCase()
@@ -58,7 +58,7 @@ export default function FeaturedProducts(){
                 <h3 className="mt-2 sm:mt-3 font-medium text-xs sm:text-sm line-clamp-2">{p.title}</h3>
                 <p className="mt-1 sm:mt-2 text-[#147E9E] font-semibold text-xs sm:text-sm">₹{p.price}</p>
                 <Link to={`/product/${p.id}`} className="inline-block mt-1 sm:mt-3 text-[10px] sm:text-sm text-[#147E9E]">{t('view')}</Link>
-                
+
               </article>
             ))}
           </div>
@@ -100,12 +100,12 @@ export default function FeaturedProducts(){
               <h3 className="text-xs sm:text-sm font-medium line-clamp-2">{p.title}</h3>
               <p className="mt-auto text-[#147E9E] font-semibold text-xs sm:text-sm">₹{p.price}</p>
               <Link to={`/product/${p.id}`} className="inline-block mt-1 sm:mt-2 text-[10px] sm:text-sm text-[#147E9E]">{t('view')}</Link>
-                <button
-   onClick={() => addToCart(p)}
-  className="w-full mt-2 bg-[#147E9E] text-white py-1 rounded text-sm hover:bg-[#10657d] active:scale-95 transition"
->
-  Add To Cart
-</button>
+              <button
+                onClick={() => addToCart(p)}
+                className="w-full mt-2 bg-[#147E9E] text-white py-1 rounded text-sm hover:bg-[#10657d] active:scale-95 transition"
+              >
+                Add To Cart
+              </button>
             </article>
           ))}
         </div>

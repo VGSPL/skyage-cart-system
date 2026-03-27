@@ -139,9 +139,10 @@ const WelcomeLetter = () => {
 
                     <button
                         className="update-btn"
-                        onClick={() => navigate("/update-profile")}
+                        // onClick={() => navigate("/update-profile")}
+                         onClick={() => navigate("/update-profile", { state: { fromWelcome: true } })}
                     >
-                        Proceed to Update Info
+                        Proceed to Update Info →
                     </button>
 
                 </div>

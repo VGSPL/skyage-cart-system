@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import "./UpdateProfile.css";
 
 export default function UpdateProfile() {
 
   const navigate = useNavigate();
+  const location = useLocation();
 
-  // const [editMode, setEditMode] = useState(true);
   const [editMode, setEditMode] = useState(false);
 
   const [user, setUser] = useState({
@@ -35,10 +35,13 @@ export default function UpdateProfile() {
 
     if (savedProfile) {
       setProfile(savedProfile);
-      setEditMode(false);
     }
 
-  }, []);
+    if (location.state?.fromWelcome) {
+      setEditMode(true);
+    }
+
+  }, [location]);
 
   const handleChange = (e) => {
     setProfile({
@@ -57,6 +60,7 @@ export default function UpdateProfile() {
 
     localStorage.setItem("user", JSON.stringify(updatedData));
     localStorage.setItem("profileInfo", JSON.stringify(profile));
+
     alert("Profile updated successfully");
 
     setEditMode(false);
