@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { getAllProducts } from '../services/api'
+import { getAllProducts } from '../services/API'
 import { useLanguage } from '../contexts/LanguageProvider'
 import { useCart } from '../contexts/CartContext'
 
@@ -45,16 +45,14 @@ export default function AllProducts() {
   const category = (params.get('category') || '').trim().toLowerCase()
 
   const filtered = (products || []).filter(p => {
-    const title = (p.title || '').toLowerCase()
+    const name = (p.name || '').toLowerCase()
     const desc = (p.description || '').toLowerCase()
-    const cat = (p.category || '').toLowerCase()
+    const cat = (p.category?.name || '').toLowerCase()
 
-    // Search filter
     const matchesSearch = q
-      ? title.includes(q) || desc.includes(q)
+      ? name.includes(q) || desc.includes(q)
       : true
 
-    // Category mapping (IMPORTANT FIX)
     const categoryMap = {
       electronics: "electronics",
       clothing: "men's clothing",
@@ -71,8 +69,16 @@ export default function AllProducts() {
     return matchesSearch && matchesCategory
   })
 
+  const handleAddToCart = (product) => {
+    addToCart({
+      product_id: product.id,
+      quantity: 1
+    })
+  }
+
   return (
     <main className="container mx-auto px-2 sm:px-4 py-4 sm:py-8 bg-[#F3EED9]">
+
       <h1 className="text-xs sm:text-lg md:text-2xl font-semibold mb-4">
         {t('allProductsHeader')}
       </h1>
@@ -83,22 +89,25 @@ export default function AllProducts() {
         </div>
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+
           {filtered.map(p => (
             <article
               key={p.id}
               className="bg-white rounded shadow p-3 flex flex-col h-full"
             >
+
               <img
-                src={p.image}
-                alt={p.title}
+                src={p.profile_image}
+                alt={p.name}
                 className="h-28 md:h-40 mx-auto object-contain"
               />
 
               <h2 className="mt-3 font-medium text-sm line-clamp-2">
-                {p.title}
+                {p.name}
               </h2>
 
               <div className="mt-auto">
+
                 <p className="mt-2 text-[#147E9E] font-semibold text-sm">
                   ₹{p.price}
                 </p>
@@ -111,16 +120,32 @@ export default function AllProducts() {
                 </Link>
 
                 <button
-                  onClick={() => addToCart(p)}
+                  onClick={() => handleAddToCart(p)}
                   className="w-full mt-2 bg-[#147E9E] text-white py-2 rounded hover:bg-[#10657d] active:scale-95 transition"
                 >
                   Add To Cart
                 </button>
+
               </div>
             </article>
           ))}
+
         </div>
       )}
+
     </main>
   )
 }
+
+
+
+
+
+
+
+
+
+
+
+
+

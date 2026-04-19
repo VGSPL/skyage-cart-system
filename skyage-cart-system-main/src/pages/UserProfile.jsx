@@ -1,29 +1,54 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { getProfile } from "../services/API";
 import "./UserProfile.css";
 
 const UserProfile = () => {
 
   const navigate = useNavigate();
 
-  const user = JSON.parse(localStorage.getItem("user")) || {
-    name: "Full Name",
-    email: "abc@gmail.com"
-  };
+  const [profile, setProfile] = useState(null);
 
-  const referralLink = "https://referral-link.com/user123";
+  
+  useEffect(() => {
 
+    const fetchProfile = async () => {
+
+      try {
+
+        const data = await getProfile();
+
+        setProfile(data);
+
+      } catch (error) {
+
+        console.error("Profile fetch error:", error);
+
+      }
+
+    };
+
+    fetchProfile();
+
+  }, []);
+
+  if (!profile) return <p>Loading profile...</p>;
+
+  const referralLink = `https://referral-link.com/${profile.referral_code}`;
+
+  
   const copyLink = () => {
-    navigator.clipboard.writeText(referralLink);
-    alert("Referral link copied!");
-  };
 
-  const checkReferrals = () => {
-    alert("Showing your referrals");
+    navigator.clipboard.writeText(referralLink);
+
+    alert("Referral link copied!");
+
   };
 
   const goToMarketplace = () => {
+
     navigate("/products");
+
   };
 
   return (
@@ -35,15 +60,17 @@ const UserProfile = () => {
       <div className="profile-box">
 
         <div className="profile-top">
+
           <img
             className="profile-img cursor-pointer"
-            src={user.profileImage || "/profile.png"}
+            src={profile.image || "/profile.png"}
             alt="profile"
-            // onClick={() => navigate("/update-profile")}
             onClick={() => navigate("/profile-photo-update")}
           />
-          <h3 className="name">{user.fullName}</h3>
-          <p className="email">{user.email}</p>
+
+          <h3 className="name">{profile.unique_id}</h3>
+
+          <p className="email">{profile.phone || "Phone not added"}</p>
 
         </div>
 
@@ -60,18 +87,6 @@ const UserProfile = () => {
             <img src="https://cdn-icons-png.flaticon.com/512/1946/1946429.png" alt="update" />
             <h4>Update Profile</h4>
             <span>Manage your personal information</span>
-          </Link>
-
-          <Link to="/billing" className="card">
-            <img src="https://cdn-icons-png.flaticon.com/512/2331/2331970.png" alt="billing" />
-            <h4>Billing Information</h4>
-            <span>Update payment details</span>
-          </Link>
-
-          <Link to="/shipping" className="card">
-            <img src="https://cdn-icons-png.flaticon.com/512/2920/2920244.png" alt="shipping" />
-            <h4>Shipping Information</h4>
-            <span>Manage delivery address</span>
           </Link>
 
           <Link to="/orders" className="card">
@@ -96,14 +111,6 @@ const UserProfile = () => {
 
           </div>
 
-          <div className="ref-box">
-
-            <span>🎉 View My Referrals (Track your referral preference)</span>
-
-            <button onClick={checkReferrals}>Check</button>
-
-          </div>
-
         </div>
 
       </div>
@@ -123,6 +130,33 @@ const UserProfile = () => {
 };
 
 export default UserProfile;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

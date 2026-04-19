@@ -1,24 +1,38 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import {
+  getWalletBalance
+} from "../services/API";
 import "./Wallet.css";
 
 export default function Wallet() {
   const navigate = useNavigate();
+
   const [balance, setBalance] = useState(0);
+  const [loading, setLoading] = useState(true);
+
+  const fetchBalance = async () => {
+    try {
+      setLoading(true);
+
+      const data = await getWalletBalance();
+
+      setBalance(parseFloat(data.balance || 0));
+
+    } catch (err) {
+      console.error("Wallet fetch error:", err);
+      setBalance(0);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-
-    const user = JSON.parse(localStorage.getItem("user"));
-    if (user && user.balance !== undefined) {
-      setBalance(user.balance);
-    } else {
-
-      setBalance(100.0);
-    }
+    fetchBalance();
   }, []);
 
-  const viewTransactions = () => {
 
+  const viewTransactions = () => {
     navigate("/wallet-transactions");
   };
 
@@ -27,7 +41,7 @@ export default function Wallet() {
       <h2 className="wallet-title">Wallet Balance</h2>
 
       <div className="wallet-balance">
-        ₹ {balance.toFixed(2)}
+        {loading ? "Loading..." : `₹ ${balance.toFixed(2)}`}
       </div>
 
       <button className="wallet-btn" onClick={viewTransactions}>
@@ -36,3 +50,15 @@ export default function Wallet() {
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+

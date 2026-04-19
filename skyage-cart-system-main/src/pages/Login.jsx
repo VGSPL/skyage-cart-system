@@ -1,18 +1,19 @@
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
-import './Login.css';
-import loginIllustration from '../assets/2152026891.jpg';
-import logo from '../assets/Logo 2.png';
+import { loginUser } from "../services/API";
+import "./Login.css";
+import loginIllustration from "../assets/2152026891.jpg";
+import logo from "../assets/Logo 2.png";
 
 const Login = () => {
 
   const [formData, setFormData] = useState({
-    email: '',
-    password: ''
+    email: "",
+    password: "",
   });
 
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [remember, setRemember] = useState(false);
 
@@ -22,7 +23,7 @@ const Login = () => {
   const handleChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
 
@@ -30,45 +31,46 @@ const Login = () => {
     setRemember(!remember);
   };
 
-  const handleSubmit = (e) => {
-
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+
+    setError("");
+
+    if (!formData.email || !formData.password) {
+      setError("Please fill out all fields");
+      return;
+    }
+
     setLoading(true);
 
-    // Check empty fields
-    if (!formData.email.trim() || !formData.password.trim()) {
-      setError("Please fill out all fields");
-      setLoading(false);
-      return;
-    }
+    try {
 
-    // Get stored user
-    const storedUser = JSON.parse(localStorage.getItem("user"));
+      const data = await loginUser(
+        formData.email,
+        formData.password
+      );
 
-    if (!storedUser) {
-      setError("User not found. Please register first.");
-      setLoading(false);
-      return;
-    }
+      
+      login(data.access);
 
-    // Validate credentials
-    if (
-      storedUser.email === formData.email &&
-      storedUser.password === formData.password
-    ) {
-
-      login();
+     
       navigate("/home");
 
-    } else {
-      setError("Invalid email or password");
+    } catch (err) {
+
+      setError(err.message || "Invalid email or password");
+
+    } finally {
+
       setLoading(false);
+
     }
+
   };
 
   return (
     <div className="auth-wrapper">
+
       <div className="auth-illustration">
         <div className="illustration-content">
           <img
@@ -78,6 +80,7 @@ const Login = () => {
           />
         </div>
       </div>
+
       <div className="auth-form-container">
         <div className="auth-form-content">
 
@@ -91,11 +94,8 @@ const Login = () => {
 
           {error && <div className="error-message">{error}</div>}
 
-          <form
-            onSubmit={handleSubmit}
-            className="auth-form"
-            autoComplete="off"
-          >
+          <form onSubmit={handleSubmit} className="auth-form">
+
             <div className="form-group">
               <label>Email</label>
               <input
@@ -104,7 +104,6 @@ const Login = () => {
                 value={formData.email}
                 onChange={handleChange}
                 placeholder="Enter your email"
-                autoComplete="off"
                 required
               />
             </div>
@@ -117,12 +116,12 @@ const Login = () => {
                 value={formData.password}
                 onChange={handleChange}
                 placeholder="••••••••"
-                autoComplete="new-password"
                 required
               />
             </div>
 
             <div className="form-options">
+
               <label className="checkbox-label">
                 <input
                   type="checkbox"
@@ -132,10 +131,10 @@ const Login = () => {
                 <span>Remember for 30 days</span>
               </label>
 
-
               <Link className="forgot-link" to="/forgot-password">
                 Forgot password?
               </Link>
+
             </div>
 
             <button
@@ -147,6 +146,7 @@ const Login = () => {
             </button>
 
             <div className="social-login">
+
               <button type="button" className="social-btn">
                 <span className="icon">G</span> Sign in with Google
               </button>
@@ -154,6 +154,7 @@ const Login = () => {
               <button type="button" className="social-btn">
                 <span className="icon"></span> Sign in with Apple
               </button>
+
             </div>
 
           </form>
@@ -170,3 +171,15 @@ const Login = () => {
 };
 
 export default Login;
+
+
+
+
+
+
+
+
+
+
+
+

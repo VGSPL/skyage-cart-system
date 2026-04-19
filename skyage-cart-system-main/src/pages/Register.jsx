@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { registerUser } from "../services/API";
 import './Register.css';
 import registerIllustration from '../assets/13916413_2009.i211.040..bag with cosmetics realistic.jpg';
 import logo from '../assets/Logo 1.png';
@@ -12,24 +13,13 @@ const Register = () => {
     password: '',
     confirm_password: '',
     pan_number: '',
-    referral_code: ''
+    referral_code: ''   
   });
 
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
-
-
-  useEffect(() => {
-
-    const isAuth = localStorage.getItem("isLoggedIn");
-
-    if (isAuth) {
-      navigate("/welcome-letter");
-    }
-
-  }, [navigate]);
 
   const handleChange = (e) => {
     setFormData({
@@ -38,7 +28,7 @@ const Register = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
 
     e.preventDefault();
     setError('');
@@ -46,7 +36,7 @@ const Register = () => {
 
     const nameParts = formData.fullName.trim().split(' ');
     const firstName = nameParts[0];
-    const lastName = nameParts.length > 1 ? nameParts.slice(1).join(' ') : '';
+    const lastName = nameParts.length > 1 ? nameParts.slice(1).join(' ') : 'User';
 
     if (!formData.pan_number) {
       setError('PAN Number is required');
@@ -60,30 +50,34 @@ const Register = () => {
       return;
     }
 
-    const userData = {
-      fullName: formData.fullName,
-      email: formData.email,
-      first_name: firstName,
-      last_name: lastName || 'User',
-      password: formData.password,
-      pan_number: formData.pan_number,
-      referral_code: formData.referral_code
-    };
+    try {
 
+      await registerUser({
+        email: formData.email,
+        first_name: firstName,
+        last_name: lastName,
+        password: formData.password,
+        confirm_password: formData.confirm_password,
+        unique_id: formData.pan_number,
+        referral_code: formData.referral_code  
+      });
 
-    localStorage.setItem("user", JSON.stringify(userData));
+      setLoading(false);
 
-    setLoading(false);
+      navigate("/login");
 
+    } catch (err) {
 
-    // navigate('/login');
-    navigate('/welcome-letter');
+      setError(err.message || "Registration failed");
+      setLoading(false);
+
+    }
+
   };
 
   return (
     <div className="auth-wrapper">
 
-      {/* Left Side Illustration */}
       <div className="auth-illustration">
         <div className="illustration-content">
           <img
@@ -94,7 +88,6 @@ const Register = () => {
         </div>
       </div>
 
-      {/* Right Side Form */}
       <div className="auth-form-container">
         <div className="auth-form-content">
 
@@ -146,6 +139,18 @@ const Register = () => {
               />
             </div>
 
+           
+            <div className="form-group">
+              <label>Referral Code (Optional)</label>
+              <input
+                type="text"
+                name="referral_code"
+                value={formData.referral_code}
+                onChange={handleChange}
+                placeholder="Enter referral code (optional)"
+              />
+            </div>
+
             <div className="form-group">
               <label>Password</label>
               <input
@@ -171,13 +176,13 @@ const Register = () => {
             </div>
 
             <button type="submit" className="auth-btn" disabled={loading}>
-              {loading ? 'Creating...' : 'Create an account'} <span className="arrow">→</span>
+              {loading ? 'Creating...' : 'Create an account'} →
             </button>
 
           </form>
 
           <div className="auth-footer">
-            Already have an account? <a href="/login">Sign in</a>
+            Already have an account? <Link to="/login">Sign in</Link>
           </div>
 
         </div>
@@ -188,7 +193,6 @@ const Register = () => {
 };
 
 export default Register;
-
 
 
 

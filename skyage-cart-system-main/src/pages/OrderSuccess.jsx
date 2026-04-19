@@ -1,17 +1,10 @@
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useEffect } from "react";
-import { useCart } from "../contexts/CartContext";
 
 export default function OrderSuccess() {
 
   const location = useLocation();
   const navigate = useNavigate();
-  const { setCart } = useCart();
-
-  useEffect(() => {
-    setCart([]);
-  }, []);
 
   const orderId = location.state?.orderId || "N/A";
 

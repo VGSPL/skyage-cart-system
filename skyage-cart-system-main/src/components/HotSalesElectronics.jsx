@@ -1,49 +1,52 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { getAllProducts } from '../services/api'
+import { getAllProducts } from '../services/API'
 import { useLanguage } from '../contexts/LanguageProvider'
 import { useCart } from "../contexts/CartContext";
+
 export default function HotSalesElectronics(){
 
   const { t } = useLanguage()
+  const { addToCart } = useCart()
 
   const [items, setItems] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
-  const { addToCart } = useCart();
-  <button
-  onClick={() => addToCart(p)}
-  className="w-full mt-2 bg-blue-600 text-white py-2 rounded"
->
-  Add To Cart
-</button>
-  useEffect(()=>{
+  useEffect(() => {
     let mounted = true
+
     getAllProducts()
-      .then(data => { 
-        if(mounted){
+      .then(data => {
+        if (mounted) {
+
           const electronics = (data || []).filter(
-            p => (p.category || '').toLowerCase() === 'electronics'
+            p => (p.category?.name || '').toLowerCase() === 'electronics'
           )
+
           setItems(electronics)
-        } 
+        }
       })
       .catch(err => setError(err.message))
-      .finally(()=> mounted && setLoading(false))
+      .finally(() => mounted && setLoading(false))
 
-    return ()=> mounted = false
-  },[])
+    return () => mounted = false
+  }, [])
 
-  if(loading)
+  if (loading)
     return <div className="container mx-auto py-6">{t('loadingProducts')}</div>
 
-  if(error)
-    return <div className="container mx-auto py-6">{t('errorPrefix')} {error}</div>
+  if (error)
+    return <div className="container mx-auto py-6 text-red-600">{t('errorPrefix')} {error}</div>
 
-  if(items.length === 0) return null
+  if (items.length === 0) return null
 
-  const rightItems = items.slice(0, 10)
+  const handleAddToCart = (product) => {
+    addToCart({
+      product_id: product.id,
+      quantity: 1
+    })
+  }
 
   return (
     <section className="container mx-auto py-6 bg-[#F3EED9]">
@@ -53,20 +56,19 @@ export default function HotSalesElectronics(){
       </h2>
 
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-        {rightItems.map(p => (
-          <article
-            key={p.id}
-            className="bg-white rounded shadow p-3 flex flex-col"
-          >
+
+        {items.slice(0, 10).map(p => (
+
+          <article key={p.id} className="bg-white rounded shadow p-3 flex flex-col">
 
             <img
-              src={p.image}
-              alt={p.title}
+              src={p.profile_image}
+              alt={p.name}
               className="h-24 object-contain mb-2"
             />
 
             <h3 className="text-sm font-medium">
-              {p.title}
+              {p.name}
             </h3>
 
             <div className="mt-auto">
@@ -79,13 +81,11 @@ export default function HotSalesElectronics(){
                 to={`/product/${p.id}`}
                 className="block mt-2 text-sm text-[#147E9E]"
               >
-                View
+                {t('view')}
               </Link>
 
-              
               <button
-                onClick={() => addToCart(p)}
-        
+                onClick={() => handleAddToCart(p)}
                 className="w-full mt-2 bg-[#147E9E] text-white py-2 rounded hover:bg-[#10657d] active:scale-95 transition"
               >
                 Add To Cart
@@ -94,7 +94,9 @@ export default function HotSalesElectronics(){
             </div>
 
           </article>
+
         ))}
+
       </div>
 
     </section>

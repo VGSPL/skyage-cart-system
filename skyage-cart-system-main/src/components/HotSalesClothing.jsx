@@ -1,68 +1,155 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { getAllProducts } from '../services/api'
+import { getAllProducts } from '../services/API'
 import { useLanguage } from '../contexts/LanguageProvider'
+import { useCart } from "../contexts/CartContext";
 
 export default function HotSalesClothing(){
+
   const { t } = useLanguage()
+  const { addToCart } = useCart()
+
   const [items, setItems] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
-  useEffect(()=>{
+  useEffect(() => {
     let mounted = true
+
     getAllProducts()
-      .then(data => { 
-        if(mounted){
-          const clothing = (data || []).filter(p => (p.category || '').toLowerCase() === 'clothing')
+      .then(data => {
+        if (mounted) {
+
+          const clothing = (data || []).filter(
+            p => (p.category?.name || '').toLowerCase() === 'clothing'
+          )
+
           setItems(clothing)
-        } 
+        }
       })
       .catch(err => setError(err.message))
-      .finally(()=> mounted && setLoading(false))
-    return ()=> mounted = false
-  },[])
+      .finally(() => mounted && setLoading(false))
 
-  if(loading) return <div className="container mx-auto px-2 sm:px-4 py-3 sm:py-6 text-xs sm:text-sm">{t('loadingProducts')}</div>
-  if(error) return <div className="container mx-auto px-2 sm:px-4 py-3 sm:py-6 text-xs sm:text-sm">{t('errorPrefix')} {error}</div>
-  if(items.length === 0) return null
+    return () => mounted = false
+  }, [])
 
-  const promoImage = (items[0] && items[0].image) || ''
+  if (loading)
+    return <div className="container mx-auto py-6">{t('loadingProducts')}</div>
+
+  if (error)
+    return <div className="container mx-auto py-6 text-red-600">{t('errorPrefix')} {error}</div>
+
+  if (items.length === 0) return null
+
+  const promoImage = items?.[0]?.profile_image || ''
   const rightItems = items.slice(1, 11)
 
+  const handleAddToCart = (product) => {
+    addToCart({
+      product_id: product.id,
+      quantity: 1
+    })
+  }
+
   return (
-    <section className="container mx-auto px-2 sm:px-4 py-3 sm:py-6 bg-white" style={{ borderTop: '3px solid #147E9E' }}>
-      <div className="flex items-center justify-between mb-2 sm:mb-4">
-        <h2 className="text-xs sm:text-base md:text-lg lg:text-xl font-semibold">Hot Sales on Clothing</h2>
-        <Link to="/products?category=clothing" className="text-[10px] sm:text-sm text-[#147E9E]">{t('viewAll')}</Link>
+
+    <section className="container mx-auto py-6 bg-white">
+
+      <div className="flex items-center justify-between mb-4">
+
+        <h2 className="text-lg font-semibold">
+          Hot Sales on Clothing
+        </h2>
+
+        <Link
+          to="/products?category=clothing"
+          className="text-sm text-[#147E9E]"
+        >
+          {t('viewAll')}
+        </Link>
+
       </div>
 
-      {/* Desktop: left promo spanning 2 rows, right grid 5 cols x 2 rows */}
-      <div className="grid grid-cols-1 md:grid-cols-6 gap-2 sm:gap-3 md:gap-4 items-stretch">
-        <div className="md:col-span-2 md:row-span-2 flex items-center justify-center">
-          <Link to="/products?category=clothing" aria-label="See all clothing" className="block">
-            <div className="w-full h-32 sm:h-48 md:h-[432px] rounded overflow-hidden relative shadow-lg">
-              <img src={promoImage} alt="Hot Sales Clothing" className="w-full h-full object-cover" />
+      <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
+
+        {/* PROMO */}
+        <div className="md:col-span-2 flex items-center justify-center">
+
+          <Link to="/products?category=clothing" className="block">
+
+            <div className="w-full h-[400px] rounded overflow-hidden relative shadow-lg">
+
+              <img
+                src={promoImage}
+                alt="Hot Sales Clothing"
+                className="w-full h-full object-cover"
+              />
+
               <div className="absolute inset-0 flex items-center justify-center">
-                <div className="bg-white/90 text-center px-2 sm:px-4 py-1 sm:py-2 rounded">
-                  <span className="text-[10px] sm:text-sm font-semibold">See All Clothing</span>
+
+                <div className="bg-white/90 px-4 py-2 rounded">
+
+                  <span className="text-sm font-semibold">
+                    See All Clothing
+                  </span>
+
                 </div>
+
               </div>
+
             </div>
+
           </Link>
+
         </div>
 
-        <div className="md:col-span-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3 md:gap-4">
+        {/* PRODUCTS */}
+        <div className="md:col-span-4 grid grid-cols-2 md:grid-cols-5 gap-4">
+
           {rightItems.map(p => (
-            <article key={p.id} className="bg-white rounded shadow p-2 sm:p-3 flex flex-col h-full">
-              <img src={p.image} alt={p.title} className="h-16 sm:h-20 md:h-24 object-contain mb-1 sm:mb-2" />
-              <h3 className="text-xs sm:text-sm font-medium line-clamp-2">{p.title}</h3>
-              <p className="mt-auto text-[#147E9E] font-semibold text-xs sm:text-sm">₹{p.price}</p>
-              <Link to={`/product/${p.id}`} className="inline-block mt-1 sm:mt-2 text-[10px] sm:text-sm text-[#147E9E]">{t('view')}</Link>
+
+            <article
+              key={p.id}
+              className="bg-white rounded shadow p-3 flex flex-col"
+            >
+
+              <img
+                src={p.profile_image}
+                alt={p.name}
+                className="h-24 object-contain mb-2"
+              />
+
+              <h3 className="text-sm font-medium line-clamp-2">
+                {p.name}
+              </h3>
+
+              <p className="mt-auto text-[#147E9E] font-semibold">
+                ₹{p.price}
+              </p>
+
+              <Link
+                to={`/product/${p.id}`}
+                className="text-sm text-[#147E9E] mt-1"
+              >
+                {t('view')}
+              </Link>
+
+              <button
+                onClick={() => handleAddToCart(p)}
+                className="w-full mt-2 bg-[#147E9E] text-white py-2 rounded"
+              >
+                Add To Cart
+              </button>
+
             </article>
+
           ))}
+
         </div>
+
       </div>
+
     </section>
+
   )
 }

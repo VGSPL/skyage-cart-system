@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { getProfile, updateProfile } from "../services/API";
 import "./UpdateProfile.css";
 
 export default function UpdateProfile() {
 
   const navigate = useNavigate();
-  const location = useLocation();
-
-  const [editMode, setEditMode] = useState(false);
 
   const [user, setUser] = useState({
     fullName: "",
@@ -26,44 +24,59 @@ export default function UpdateProfile() {
 
   useEffect(() => {
 
-    const storedUser = JSON.parse(localStorage.getItem("user"));
-    const savedProfile = JSON.parse(localStorage.getItem("profileInfo"));
+    async function loadProfile() {
 
-    if (storedUser) {
-      setUser(storedUser);
+      const data = await getProfile();
+
+      setUser({
+        fullName: data.user?.full_name,
+        email: data.user?.email
+      });
+
+      setProfile({
+        phone: data.phone || "",
+        address1: data.address1 || "",
+        address2: data.address2 || "",
+        city: data.city || "",
+        state: data.state || "",
+        zip: data.zip || "",
+        country: data.country || ""
+      });
+
     }
 
-    if (savedProfile) {
-      setProfile(savedProfile);
-    }
+    loadProfile();
 
-    if (location.state?.fromWelcome) {
-      setEditMode(true);
-    }
-
-  }, [location]);
+  }, []);
 
   const handleChange = (e) => {
+
     setProfile({
       ...profile,
       [e.target.name]: e.target.value
     });
+
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
+
     e.preventDefault();
 
-    const updatedData = {
-      ...user,
-      ...profile
-    };
+    try {
 
-    localStorage.setItem("user", JSON.stringify(updatedData));
-    localStorage.setItem("profileInfo", JSON.stringify(profile));
+      await updateProfile(profile);
 
-    alert("Profile updated successfully");
+      alert("Profile updated successfully");
 
-    setEditMode(false);
+      navigate("/home");
+
+    } catch (err) {
+
+      console.error(err);
+      alert("Update failed");
+
+    }
+
   };
 
   return (
@@ -74,159 +87,99 @@ export default function UpdateProfile() {
 
       <div className="profile-card">
 
-        {!editMode ? (
+        <form onSubmit={handleSubmit}>
 
-          <div className="profile-view">
+          <h3>Your Information</h3>
 
-            <h3>Your Information</h3>
+          <label>Full Name</label>
+          <input type="text" value={user.fullName} readOnly />
 
-            <p><b>Full Name:</b> {user.fullName}</p>
-            <p><b>Email:</b> {user.email}</p>
+          <label>Email</label>
+          <input type="email" value={user.email} readOnly />
 
-            <h3>Profile Information</h3>
+          <h3>Profile Information</h3>
 
-            <p><b>Phone:</b> {profile.phone}</p>
-            <p><b>Address 1:</b> {profile.address1}</p>
-            <p><b>Address 2:</b> {profile.address2}</p>
-            <p><b>City:</b> {profile.city}</p>
-            <p><b>State:</b> {profile.state}</p>
-            <p><b>Zip:</b> {profile.zip}</p>
-            <p><b>Country:</b> {profile.country}</p>
+          <label>Phone</label>
+          <input type="text" name="phone" value={profile.phone} onChange={handleChange} />
 
-            <button
-              className="update-btn"
-              onClick={() => setEditMode(true)}
-            >
-              Update
-            </button>
+          <label>Address Line 1</label>
+          <input type="text" name="address1" value={profile.address1} onChange={handleChange} />
 
-            <button
-              className="cancel-btn"
-              onClick={() => navigate("/home")}
-            >
-              ← Back to Profile
-            </button>
+          <label>Address Line 2</label>
+          <input type="text" name="address2" value={profile.address2} onChange={handleChange} />
+
+          <div className="row">
+
+            <div>
+              <label>City</label>
+              <input type="text" name="city" value={profile.city} onChange={handleChange} />
+            </div>
+
+            <div>
+              <label>State</label>
+              <input type="text" name="state" value={profile.state} onChange={handleChange} />
+            </div>
 
           </div>
 
-        ) : (
+          <div className="row">
 
-          <form onSubmit={handleSubmit}>
-
-            <h3>Your Information</h3>
-
-            <label>Full Name</label>
-            <input type="text" value={user.fullName} readOnly />
-
-            <label>Email</label>
-            <input type="email" value={user.email} readOnly />
-
-            <p className="note">
-              This information was provided during registration and cannot be changed here.
-            </p>
-
-            <h3>Profile Information</h3>
-
-            <label>Phone</label>
-            <input
-              type="text"
-              placeholder="Phone"
-              name="phone"
-              value={profile.phone}
-              onChange={handleChange}
-            />
-
-            <label>Address Line 1</label>
-            <input
-              type="text"
-              placeholder="Address 1"
-              name="address1"
-              value={profile.address1}
-              onChange={handleChange}
-            />
-
-            <label>Address Line 2</label>
-            <input
-              type="text"
-              placeholder="Address 2"
-              name="address2"
-              value={profile.address2}
-              onChange={handleChange}
-            />
-
-            <div className="row">
-
-              <div>
-                <label>City</label>
-                <input
-                  type="text"
-                  placeholder="City"
-                  name="city"
-                  value={profile.city}
-                  onChange={handleChange}
-                />
-              </div>
-
-              <div>
-                <label>State</label>
-                <input
-                  type="text"
-                  placeholder="State"
-                  name="state"
-                  value={profile.state}
-                  onChange={handleChange}
-                />
-              </div>
-
+            <div>
+              <label>Zip Code</label>
+              <input type="text" name="zip" value={profile.zip} onChange={handleChange} />
             </div>
 
-            <div className="row">
-
-              <div>
-                <label>Zip Code</label>
-                <input
-                  type="text"
-                  placeholder="Zip Code"
-                  name="zip"
-                  value={profile.zip}
-                  onChange={handleChange}
-                />
-              </div>
-
-              <div>
-                <label>Country</label>
-                <input
-                  type="text"
-                  placeholder="Country"
-                  name="country"
-                  value={profile.country}
-                  onChange={handleChange}
-                />
-              </div>
-
+            <div>
+              <label>Country</label>
+              <input type="text" name="country" value={profile.country} onChange={handleChange} />
             </div>
 
-            <button className="update-btn" type="submit">
-              Update Profile
-            </button>
+          </div>
 
-            <button
-              className="cancel-btn"
-              type="button"
-              onClick={() => navigate("/home")}
-            >
-              Cancel
-            </button>
+          <button className="update-btn" type="submit">
+            Update Profile
+          </button>
 
-          </form>
+          <button
+            className="cancel-btn"
+            type="button"
+            onClick={() => navigate("/home")}
+          >
+            Cancel
+          </button>
 
-        )}
+        </form>
 
       </div>
 
     </div>
+
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

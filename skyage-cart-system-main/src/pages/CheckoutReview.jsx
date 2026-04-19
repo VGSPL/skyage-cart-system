@@ -1,106 +1,139 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useCart } from "../contexts/CartContext";
+import { walletPayment, getCart, getCartTotal } from "../services/API";
 
 export default function CheckoutReview() {
 
   const navigate = useNavigate();
-  const { cart, finalTotal, paymentMethod } = useCart();
+
+  const [cartItems, setCartItems] = useState([]);
+  const [cartTotal, setCartTotal] = useState(0);
 
   const customerInfo = JSON.parse(localStorage.getItem("customerInfo"));
 
-  const handlePlaceOrder = () => {
-    navigate("/payment-method", {
-      state: { orderId: Date.now() }
-    });
+  useEffect(() => {
+    fetchCart();
+  }, []);
+
+  const fetchCart = async () => {
+    try {
+
+      const cart = await getCart();
+      setCartItems(cart.items || []);
+
+      const total = await getCartTotal();
+      setCartTotal(total.total);
+
+    } catch (error) {
+      console.error("Cart fetch error", error);
+    }
   };
 
-  return (<div className="min-h-screen bg-[#F3EED9] flex justify-center items-center py-16 px-4">
+  const handlePlaceOrder = async () => {
 
+    try {
 
-    <div className="w-full max-w-md bg-[#f8f6f0] rounded-3xl shadow-2xl p-6 space-y-5 border border-[#e6dfcf]">
+      const res = await walletPayment();
 
-      {/* Title */}
-      <div className="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm">
-        <h1 className="text-xl font-semibold text-gray-800">
-          Review Your Order
-        </h1>
-      </div>
+      navigate("/order-success", {
+        state: { orderId: res.id }
+      });
 
-      {/* Shipping Info */}
-      <div className="bg-white p-4 rounded-xl border border-gray-100">
-        <h2 className="text-sm font-semibold text-gray-700 mb-2">
-          Shipping Info
-        </h2>
+    } catch (error) {
 
-        {customerInfo ? (
-          <div className="text-sm text-gray-600 space-y-1">
-            <p>{customerInfo.fullName}</p>
-            <p>{customerInfo.address}</p>
-            <p>{customerInfo.city}, {customerInfo.state}</p>
-            <p>{customerInfo.pincode}</p>
-            <p>{customerInfo.phone}</p>
-            <p>{customerInfo.email}</p>
-          </div>
-        ) : (
-          <p className="text-sm text-gray-400">
-            No shipping information available
-          </p>
-        )}
-      </div>
+      console.error("Payment failed", error);
+      alert("Payment failed. Please check wallet balance.");
 
-      {/* Payment Method */}
-      <div className="bg-white p-4 rounded-xl border border-gray-100">
-        <h2 className="text-sm font-semibold text-gray-700 mb-2">
-          Payment Method
-        </h2>
-        <p className="text-sm text-gray-600">
-          {paymentMethod || "UPI Payment"}
-        </p>
-      </div>
+    }
 
-      {/* Order Items */}
-      <div className="bg-white p-4 rounded-xl border border-gray-100">
-        <h2 className="text-sm font-semibold text-gray-700 mb-3">
-          Order Items
-        </h2>
+  };
 
-        {cart.length > 0 ? (
-          cart.map((item, index) => (
-            <div key={index} className="flex justify-between text-sm py-1">
-              <span className="w-3/4 truncate">
-                {item.title} x {item.quantity}
-              </span>
+  return (
 
-              <span>
-                ₹{(item.price * item.quantity).toFixed(2)}
-              </span>
-            </div>
-          ))
-        ) : (
-          <p className="text-sm text-gray-400">No items in cart</p>
-        )}
+<div className="min-h-screen bg-[#F3EED9] flex justify-center items-center py-16 px-4">
 
-        <div className="border-t mt-3 pt-3 flex justify-between font-semibold">
-          <span>Total Amount</span>
-          <span className="text-red-600">
-            ₹{finalTotal ? finalTotal.toFixed(2) : 0}
-          </span>
+  <div className="w-full max-w-md bg-[#f8f6f0] rounded-3xl shadow-2xl p-6 space-y-5 border border-[#e6dfcf]">
+
+    <div className="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm">
+      <h1 className="text-xl font-semibold text-gray-800">
+        Review Your Order
+      </h1>
+    </div>
+
+    <div className="bg-white p-4 rounded-xl border border-gray-100">
+      <h2 className="text-sm font-semibold text-gray-700 mb-2">
+        Shipping Info
+      </h2>
+
+      {customerInfo ? (
+        <div className="text-sm text-gray-600 space-y-1">
+          <p>{customerInfo.fullName}</p>
+          <p>{customerInfo.address}</p>
+          <p>{customerInfo.city}, {customerInfo.state}</p>
+          <p>{customerInfo.pincode}</p>
+          <p>{customerInfo.phone}</p>
+          <p>{customerInfo.email}</p>
         </div>
-      </div>
+      ) : (
+        <p className="text-sm text-gray-400">
+          No shipping information available
+        </p>
+      )}
+    </div>
 
-      {/* Place Order Button */}
-      <button
-        onClick={handlePlaceOrder}
-        className="w-full bg-[#147E9E] hover:bg-[#126b86] text-white py-3 rounded-xl font-medium transition duration-300"
-      >
-        Place Order
-      </button>
+    <div className="bg-white p-4 rounded-xl border border-gray-100">
+      <h2 className="text-sm font-semibold text-gray-700 mb-2">
+        Payment Method
+      </h2>
+      <p className="text-sm text-gray-600">
+        Wallet Payment
+      </p>
+    </div>
+
+    <div className="bg-white p-4 rounded-xl border border-gray-100">
+      <h2 className="text-sm font-semibold text-gray-700 mb-3">
+        Order Items
+      </h2>
+
+      {cartItems.length > 0 ? (
+        cartItems.map((item, index) => (
+
+          <div key={index} className="flex justify-between text-sm py-1">
+
+            <span className="w-3/4 truncate">
+              {item.product?.name} x {item.quantity}
+            </span>
+
+            <span>
+              ₹{item.total_price}
+            </span>
+
+          </div>
+
+        ))
+      ) : (
+        <p className="text-sm text-gray-400">No items in cart</p>
+      )}
+
+      <div className="border-t mt-3 pt-3 flex justify-between font-semibold">
+        <span>Total Amount</span>
+        <span className="text-red-600">
+          ₹{cartTotal}
+        </span>
+      </div>
 
     </div>
 
+    <button
+      onClick={handlePlaceOrder}
+      className="w-full bg-[#147E9E] hover:bg-[#126b86] text-white py-3 rounded-xl font-medium transition duration-300"
+    >
+      Place Order
+    </button>
+
   </div>
 
+</div>
 
   );
 }

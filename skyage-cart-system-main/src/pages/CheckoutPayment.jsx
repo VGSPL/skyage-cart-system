@@ -1,19 +1,31 @@
-import React, { useContext } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { CartContext } from "../contexts/CartContext";
+import { getCart, getCartTotal } from "../services/API";
 
 export default function CheckoutPayment() {
 
   const navigate = useNavigate();
-  const { cart } = useContext(CartContext);
 
-  const subtotal = cart.reduce(
-    (sum, item) => sum + item.price * (item.quantity || 1),
-    0
-  );
+  const [cartItems, setCartItems] = useState([]);
+  const [cartTotal, setCartTotal] = useState(0);
 
-  const shipping = 0;
-  const finalTotal = subtotal + shipping;
+  useEffect(() => {
+    fetchCart();
+  }, []);
+
+  const fetchCart = async () => {
+    try {
+
+      const cartRes = await getCart();
+      setCartItems(cartRes.data);
+
+      const totalRes = await getCartTotal();
+      setCartTotal(totalRes.data.total);
+
+    } catch (error) {
+      console.error("Cart fetch error:", error);
+    }
+  };
 
   const handleReview = () => {
     navigate("/checkout/review");
@@ -54,7 +66,8 @@ export default function CheckoutPayment() {
             Order Summary
           </h2>
 
-          {cart.map((item, index) => (
+          {cartItems.map((item, index) => (
+
             <div
               key={index}
               style={{
@@ -71,7 +84,7 @@ export default function CheckoutPayment() {
 
                 <img
                   src={item.image}
-                  alt={item.name}
+                  alt={item.title}
                   style={{
                     width: "55px",
                     height: "55px",
@@ -95,10 +108,11 @@ export default function CheckoutPayment() {
               </div>
 
               <strong style={{ fontSize: "16px" }}>
-                ₹{item.price * item.quantity}
+                ₹{item.total_price}
               </strong>
 
             </div>
+
           ))}
 
           <hr style={{ opacity: "0.3" }} />
@@ -107,7 +121,7 @@ export default function CheckoutPayment() {
 
             <p style={{ display: "flex", justifyContent: "space-between" }}>
               <span>Subtotal</span>
-              <span>₹{subtotal}</span>
+              <span>₹{cartTotal}</span>
             </p>
 
             <p style={{ display: "flex", justifyContent: "space-between" }}>
@@ -135,7 +149,7 @@ export default function CheckoutPayment() {
                 fontWeight: "700"
               }}
             >
-              ₹{finalTotal}
+              ₹{cartTotal}
             </span>
 
           </h3>
@@ -155,7 +169,6 @@ export default function CheckoutPayment() {
               cursor: "pointer",
               fontSize: "16px",
               fontWeight: "600"
-
             }}
           >
             Review Order →
@@ -166,14 +179,6 @@ export default function CheckoutPayment() {
       </div>
 
     </div>
+
   );
 }
-
-
-
-
-
-
-
-
-

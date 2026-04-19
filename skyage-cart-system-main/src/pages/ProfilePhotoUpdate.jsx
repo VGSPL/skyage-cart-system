@@ -1,84 +1,90 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { updateProfile } from "../services/API";
 import "./ProfilePhotoUpdate.css";
 
 export default function ProfilePhotoUpdate() {
-  const navigate = useNavigate();
-  const storedUser = JSON.parse(localStorage.getItem("user")) || {};
 
-  const [firstName, setFirstName] = useState(storedUser.firstName || "");
-  const [lastName, setLastName] = useState(storedUser.lastName || "");
-  const [email] = useState(storedUser.email || "");
-  const [uniqueid] = useState(storedUser.uniqueid || "");
-  const [image, setImage] = useState(storedUser.image || "");
+  const navigate = useNavigate();
+
+  const [image, setImage] = useState(null);
+  const [preview, setPreview] = useState("");
 
   const handleImageChange = (e) => {
+
     const file = e.target.files[0];
+
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => setImage(reader.result);
-      reader.readAsDataURL(file);
+
+      setImage(file);
+      setPreview(URL.createObjectURL(file));
+
     }
+
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
+
     e.preventDefault();
-    const updatedUser = { firstName, lastName, email, uniqueid, image };
-    localStorage.setItem("user", JSON.stringify(updatedUser));
-    alert("Profile Updated Successfully");
+
+    try {
+
+      await updateProfile({
+        image: image
+      });
+
+      alert("Profile photo updated");
+
+      navigate("/home");
+
+    } catch (err) {
+
+      console.error(err);
+      alert("Upload failed");
+
+    }
+
   };
 
   return (
+
     <div className="profile-update-page">
 
       <div className="profile-right-side">
 
-
         <h2 className="form-heading">
-          Profile Picture / Name Update
+          Profile Picture Update
         </h2>
-        <div className="profile-form-card">
 
+        <div className="profile-form-card">
 
           <form onSubmit={handleSubmit}>
 
             <div className="image-preview">
+
               <img
-                src={image || "/profile.png"}
+                src={preview || "/profile.png"}
                 alt="profile"
               />
+
             </div>
 
-            <label>First name:</label>
-            <input
-              type="text"
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
-            />
-
-            <label>Last name:</label>
-            <input
-              type="text"
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
-            />
-
-            <label>Email:</label>
-            <input type="email" value={email} disabled />
-
-            <label>Uniqueid:</label>
-            <input type="text" value={uniqueid} disabled />
-
             <label>Profile Picture:</label>
-            <input type="file" accept="image/*" onChange={handleImageChange} />
 
-            <button className="update-btn">Update Details</button>
-            <button type="button" className="password-btn">Update Password</button>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+            />
+
+            <button className="update-btn">
+              Update Photo
+            </button>
 
             <button
               className="cancel-btn"
               type="button"
-              onClick={() => navigate("/update-profile")}
+              onClick={() => navigate("/home")}
             >
               Cancel
             </button>
@@ -86,11 +92,17 @@ export default function ProfilePhotoUpdate() {
           </form>
 
         </div>
+
       </div>
 
     </div>
+
   );
+
 }
+
+
+
 
 
 

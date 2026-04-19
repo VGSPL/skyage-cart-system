@@ -7,9 +7,16 @@ export default function PaymentMethod() {
 
   const navigate = useNavigate();
 
-  const handleReview = () => {
-    // navigate("/checkout/review");
-     navigate("/order-success");
+  const handlePaymentDone = () => {
+
+    const confirmPayment = window.confirm(
+      "Have you completed the UPI payment?"
+    );
+
+    if (confirmPayment) {
+      navigate("/order-success");
+    }
+
   };
 
   return (
@@ -42,7 +49,7 @@ export default function PaymentMethod() {
 
         <button
           className="review-btn"
-          onClick={handleReview}
+          onClick={handlePaymentDone}
         >
           Payment Done →
         </button>
