@@ -50,10 +50,10 @@ const Login = () => {
         formData.password
       );
 
-      
+
       login(data.access);
 
-     
+
       navigate("/home");
 
     } catch (err) {

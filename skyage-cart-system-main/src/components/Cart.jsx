@@ -5,7 +5,8 @@ export default function Cart() {
   const { cart, increaseQty, decreaseQty, removeItem, cartTotal } = useCart();
   const navigate = useNavigate();
 
-  const items = cart?.items || [];
+  // const items = cart?.items || [];
+     const items = cart || [];
 
   if (!items || items.length === 0) {
     return (

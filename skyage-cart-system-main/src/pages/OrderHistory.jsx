@@ -5,15 +5,25 @@ import "./OrderHistory.css";
 
 export default function OrderHistory() {
   const navigate = useNavigate();
+
   const [orders, setOrders] = useState([]);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchOrders() {
       try {
+        setLoading(true);
+
         const data = await getMyOrders();
+
         setOrders(data.results || data || []);
+        setError(null);
       } catch (err) {
         console.error("Failed to load orders", err);
+        setError("Failed to load orders");
+      } finally {
+        setLoading(false);
       }
     }
 
@@ -30,22 +40,42 @@ export default function OrderHistory() {
           Back
         </button>
 
+        
+        {loading && <p>Loading orders...</p>}
+        
+        {error && <p style={{ color: "red" }}>{error}</p>}
+
+        {!loading && orders.length === 0 && !error && (
+          <p>No orders found</p>
+        )}
+
         <div className="order-list-clean">
           {orders.map((order) => (
             <div className="order-card-clean" key={order.id}>
               <div className="order-header-clean">
-                <span className="order-id">{order.id}</span>
+                <span className="order-id">#{order.id}</span>
+
                 <span className={`status ${order.status?.toLowerCase()}`}>
-                  {order.status}
+                  {order.status || "Pending"}
                 </span>
               </div>
 
               <div className="order-details-clean">
-                <p className="order-date">{order.created_at}</p>
-                <p className="order-items">
-                  {order.items?.map((i) => i.product_name).join(", ")}
+                <p className="order-date">
+                  {order.created_at
+                    ? new Date(order.created_at).toLocaleDateString()
+                    : "No date"}
                 </p>
-                <p className="order-amount">₹{order.total_amount}</p>
+
+                <p className="order-items">
+                  {(order.items || [])
+                    .map((i) => i.product_name)
+                    .join(", ") || "No items"}
+                </p>
+
+                <p className="order-amount">
+                  ₹{order.total_amount || 0}
+                </p>
               </div>
             </div>
           ))}

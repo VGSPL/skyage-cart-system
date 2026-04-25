@@ -55,7 +55,7 @@ export default function Product() {
         {/* IMAGE FIX */}
         <div className="bg-white rounded shadow p-4 flex justify-center">
           <img
-            src={product.profile_image || product.image}
+            src={product.profile_image || product.image || "/no-image.png"}
             alt={product.name}
             className="max-h-72 object-contain"
           />
@@ -77,7 +77,7 @@ export default function Product() {
           </p>
 
           <p className="mt-2 text-sm text-gray-500">
-            {t('category')}: {product.category?.name}
+            {t('category')}: {product.category?.name || "No Category"}
           </p>
 
           <button

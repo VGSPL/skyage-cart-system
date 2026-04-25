@@ -4,6 +4,7 @@ import { useLanguage } from '../contexts/LanguageProvider'
 import { useCart } from '../contexts/CartContext'
 import CTAIcon from '../config/ctaIcon'
 import { useAuth } from "../contexts/AuthContext"
+import { getUser } from "../services/API"
 
 export default function Header() {
 
@@ -12,15 +13,26 @@ export default function Header() {
   const { t, lang, setLang } = useLanguage()
   const { cart } = useCart()
   const { isAuth, logout } = useAuth()
-  const [userName, setUserName] = useState("")
 
+  const [userName, setUserName] = useState("Loading...")
+
+ 
   useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem("user"))
-
-    if (storedUser && storedUser.fullName) {
-      setUserName(storedUser.fullName)
+    async function loadUser() {
+      try {
+        const data = await getUser()
+        const name = `${data.first_name || ""} ${data.last_name || ""}`.trim()
+        setUserName(name || "User")
+      } catch (err) {
+        console.error("Header user fetch error:", err)
+        setUserName("User")
+      }
     }
-  }, [])
+
+    if (isAuth) {
+      loadUser()
+    }
+  }, [isAuth])
 
   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0)
 
@@ -28,18 +40,7 @@ export default function Header() {
   const [selectedCategory, setSelectedCategory] = useState('')
 
   const headerRef = useRef(null)
-  const [headerHeight, setHeaderHeight] = useState(0)
   const location = useLocation()
-
-  useEffect(() => {
-    function updateHeight() {
-      if (headerRef.current)
-        setHeaderHeight(headerRef.current.getBoundingClientRect().height)
-    }
-    updateHeight()
-    window.addEventListener('resize', updateHeight)
-    return () => window.removeEventListener('resize', updateHeight)
-  }, [])
 
   useEffect(() => {
     const params = new URLSearchParams(location.search)
@@ -63,17 +64,14 @@ export default function Header() {
 
           <nav className="flex items-center gap-6 text-xs">
 
-            {/* Get App */}
             <div className="flex flex-col items-center text-gray-700 hover:text-[#147E9E] cursor-pointer">
               <span>Get App</span>
             </div>
 
-            {/* Notifications */}
             <div className="flex flex-col items-center text-gray-700 hover:text-[#147E9E] cursor-pointer">
               <span>Notifications</span>
             </div>
 
-            {/* Cart */}
             <Link
               to="/cart"
               className="relative flex flex-col items-center text-gray-700 hover:text-[#147E9E]"
@@ -86,7 +84,6 @@ export default function Header() {
               )}
             </Link>
 
-            {/* Language */}
             <select
               value={lang}
               onChange={e => setLang(e.target.value)}
@@ -97,17 +94,12 @@ export default function Header() {
               <option value="hi">हिंदी</option>
             </select>
 
-
             {isAuth ? (
-
               <>
-
                 <div
-
                   onClick={() => navigate("/profile")}
                   className="flex items-center gap-2 cursor-pointer hover:text-[#147E9E]"
                 >
-
                   <img
                     src="/profile.png"
                     alt="profile"
@@ -117,10 +109,8 @@ export default function Header() {
                   <span className="text-xs font-medium">
                     {userName}
                   </span>
-
                 </div>
 
-                {/* Logout */}
                 <button
                   onClick={() => {
                     logout()
@@ -130,27 +120,21 @@ export default function Header() {
                 >
                   Logout
                 </button>
-
               </>
-
             ) : (
-
               <Link to="/login" className="text-xs hover:text-[#147E9E]">
                 Sign In
               </Link>
-
             )}
 
           </nav>
         </div>
       </div>
 
-
       {/* Main Header */}
       <div className="container mx-auto flex items-center justify-between h-16 px-4">
 
         <div className="flex items-center gap-4">
-
           <Link to={isAuth ? "/home" : "/"} className="text-xl font-semibold text-[#147E9E]">
             {t('brand')}
           </Link>
@@ -191,8 +175,7 @@ export default function Header() {
 
       </div>
 
-
-      {/* Banner */}
+      
       <div
         className="w-full"
         style={{
@@ -208,6 +191,8 @@ export default function Header() {
               <h3 className="text-lg md:text-xl font-semibold">
                 {t('searchBannerTitle')}
               </h3>
+
+              
               <p className="text-sm opacity-90 mt-1">
                 {t('searchPlaceholder')}
               </p>
@@ -250,6 +235,7 @@ export default function Header() {
               </div>
             </form>
 
+           
             <div className="flex gap-3 justify-center flex-wrap">
               {['electronics', 'clothing', 'home'].map(cat => (
                 <button
@@ -269,6 +255,8 @@ export default function Header() {
     </header>
   )
 }
+
+
 
 
 

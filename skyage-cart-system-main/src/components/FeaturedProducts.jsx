@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { getAllProducts } from '../services/API'
+import { getFeaturedProducts } from '../services/API'
 import { useLanguage } from '../contexts/LanguageProvider'
 import { useCart } from "../contexts/CartContext";
 
@@ -19,7 +19,7 @@ export default function FeaturedProducts() {
     const fetchProducts = async () => {
       try {
         setLoading(true)
-        const data = await getAllProducts()
+        const data = await getFeaturedProducts()
         if (mounted) setItems(data || [])
       } catch (err) {
         setError(err.message)
@@ -31,7 +31,7 @@ export default function FeaturedProducts() {
     fetchProducts()
 
    
-    const interval = setInterval(fetchProducts, 5000)
+    // const interval = setInterval(fetchProducts, 5000)
 
     return () => {
       mounted = false

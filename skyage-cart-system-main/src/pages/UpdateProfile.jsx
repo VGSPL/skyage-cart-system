@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { getProfile, updateProfile } from "../services/API";
+import { getProfile, updateProfile, getUser } from "../services/API";
 import "./UpdateProfile.css";
 
 export default function UpdateProfile() {
-
   const navigate = useNavigate();
 
   const [user, setUser] = useState({
@@ -19,74 +18,76 @@ export default function UpdateProfile() {
     city: "",
     state: "",
     zip: "",
-    country: ""
+    country: "",
   });
 
+  
   useEffect(() => {
-
     async function loadProfile() {
+      try {
+        const profileData = await getProfile();
+        const userData = await getUser();
 
-      const data = await getProfile();
+        
+        setUser({
+          fullName: `${userData.first_name || ""} ${userData.last_name || ""}`.trim(),
+          email: userData.email || "",
+        });
 
-      setUser({
-        fullName: data.user?.full_name,
-        email: data.user?.email
-      });
-
-      setProfile({
-        phone: data.phone || "",
-        address1: data.address1 || "",
-        address2: data.address2 || "",
-        city: data.city || "",
-        state: data.state || "",
-        zip: data.zip || "",
-        country: data.country || ""
-      });
-
+       
+        setProfile({
+          phone: profileData.phone || "",
+          address1: profileData.address1 || "",
+          address2: profileData.address2 || "",
+          city: profileData.city || "",
+          state: profileData.state || "",
+          zip: profileData.zipcode || "",
+          country: profileData.country || "",
+        });
+      } catch (err) {
+        console.error("Profile load error:", err);
+      }
     }
 
     loadProfile();
-
   }, []);
 
+ 
   const handleChange = (e) => {
-
     setProfile({
       ...profile,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
-
   };
 
+  
   const handleSubmit = async (e) => {
-
     e.preventDefault();
 
     try {
-
-      await updateProfile(profile);
+      await updateProfile({
+        phone: profile.phone,
+        address1: profile.address1,
+        address2: profile.address2,
+        city: profile.city,
+        state: profile.state,
+        zipcode: profile.zip,
+        country: profile.country,
+      });
 
       alert("Profile updated successfully");
-
       navigate("/home");
-
     } catch (err) {
-
       console.error(err);
       alert("Update failed");
-
     }
-
   };
 
   return (
-
     <div className="profile-container">
-
       <h2 className="title">Update Your Profile Information</h2>
 
       <div className="profile-card">
-
         <form onSubmit={handleSubmit}>
 
           <h3>Your Information</h3>
@@ -109,7 +110,6 @@ export default function UpdateProfile() {
           <input type="text" name="address2" value={profile.address2} onChange={handleChange} />
 
           <div className="row">
-
             <div>
               <label>City</label>
               <input type="text" name="city" value={profile.city} onChange={handleChange} />
@@ -119,11 +119,9 @@ export default function UpdateProfile() {
               <label>State</label>
               <input type="text" name="state" value={profile.state} onChange={handleChange} />
             </div>
-
           </div>
 
           <div className="row">
-
             <div>
               <label>Zip Code</label>
               <input type="text" name="zip" value={profile.zip} onChange={handleChange} />
@@ -133,7 +131,6 @@ export default function UpdateProfile() {
               <label>Country</label>
               <input type="text" name="country" value={profile.country} onChange={handleChange} />
             </div>
-
           </div>
 
           <button className="update-btn" type="submit">
@@ -149,14 +146,10 @@ export default function UpdateProfile() {
           </button>
 
         </form>
-
       </div>
-
     </div>
-
   );
 }
-
 
 
 

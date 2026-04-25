@@ -265,9 +265,50 @@ export async function updateProfile(data) {
   return res.json();
 }
 
+export async function getUser() {
+  const token = localStorage.getItem("access");
 
+  const res = await fetch("http://127.0.0.1:8000/api/auth/users/me/", {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
-// ---------------- Categories ----------------
+  if (!res.ok) throw new Error("Failed to fetch user");
+
+  return res.json();
+}
+
+// CREATE bank details
+export async function createBankDetails(data) {
+  const res = await fetch(`${API_BASE}/users/bank-details/`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      ...getAuthHeaders(),
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!res.ok) throw new Error("Failed to submit bank details");
+
+  return res.json();
+}
+
+// GET bank details
+export async function getBankDetails() {
+  const res = await fetch(`${API_BASE}/users/get-bank-details/`, {
+    method: "GET",
+    headers: getAuthHeaders(),
+  });
+
+  if (!res.ok) throw new Error("Failed to fetch bank details");
+
+  return res.json();
+}
+
+//  Categories 
 export async function getAllCategories() {
   const res = await fetch(`${API_BASE}/categories/`);
 
@@ -276,7 +317,7 @@ export async function getAllCategories() {
   return res.json();
 }
 
-// ---------------- Orders ----------------
+//  Orders 
 export async function getMyOrders(page = 1) {
   const res = await fetch(`${API_BASE}/orders/?page=${page}`, {
     headers: getAuthHeaders(),
@@ -297,12 +338,14 @@ export async function getOrderDetail(id) {
   return res.json();
 }
 
-
-// ---------------- WALLET PAYMENT ----------------
+//  WALLET PAYMENT 
 export async function walletPayment() {
   const res = await fetch(`${API_BASE}/payment/wallet_payment/`, {
     method: "POST",
-    headers: getAuthHeaders(),
+    headers: {
+      ...getAuthHeaders(),
+      "Content-Type": "application/json",
+    },
   });
 
   const data = await res.json();
@@ -313,7 +356,9 @@ export async function walletPayment() {
 
   return data;
 }
-// ---------------- WALLET BALANCE ----------------
+
+
+//  WALLET BALANCE 
 export async function getWalletBalance() {
   const res = await fetch(`${API_BASE}/wallet/balance/`, {
     method: "GET",
@@ -327,8 +372,10 @@ export async function getWalletBalance() {
   return res.json();
 }
 
-// ---------------- WALLET TRANSACTIONS ----------------
+
+//  WALLET TRANSACTIONS 
 export async function getWalletTransactions(page = null) {
+
   const url = page
     ? `${API_BASE}/wallet/transactions/?page=${page}`
     : `${API_BASE}/wallet/transactions/`;
@@ -345,11 +392,16 @@ export async function getWalletTransactions(page = null) {
   return res.json();
 }
 
-// ---------------- WALLET WITHDRAW ----------------
+
+//  WALLET WITHDRAW 
 export async function withdrawWallet(data) {
+
   const res = await fetch(`${API_BASE}/wallet/withdraw/`, {
     method: "POST",
-    headers: getAuthHeaders(),
+    headers: {
+      ...getAuthHeaders(),
+      "Content-Type": "application/json",
+    },
     body: JSON.stringify(data),
   });
 
@@ -362,12 +414,16 @@ export async function withdrawWallet(data) {
   return result;
 }
 
-// ---------------- GET SHIPPING ADDRESS ----------------
+//  GET SHIPPING ADDRESS 
+
 export async function getShippingAddress() {
+
   const res = await fetch(`${API_BASE}/shipping-address/me/`, {
     method: "GET",
     headers: getAuthHeaders(),
   });
+
+  if (res.status === 404) return null;
 
   if (!res.ok) throw new Error("Failed to fetch shipping address");
 
@@ -375,67 +431,71 @@ export async function getShippingAddress() {
 }
 
 
-// ---------------- CREATE SHIPPING ADDRESS ----------------
+// CREATE SHIPPING ADDRESS
 export async function createShippingAddress(data) {
+
   const res = await fetch(`${API_BASE}/shipping-address/me/`, {
-    method: "POST",
-    headers: getAuthHeaders(),
-    body: JSON.stringify(data),
-  });
-
-  const result = await res.json();
-
-  if (!res.ok) {
-    throw new Error(result.detail || "Failed to create address");
-  }
-
-  return result;
-}
-
-// ---------------- UPDATE SHIPPING ADDRESS ----------------
-
-export async function updateShippingAddress(data) {
-  const res = await fetch(`${API_BASE}/shipping-address/me/`, {
-    method: "PATCH",
-    headers: getAuthHeaders(),
-    body: JSON.stringify(data),
-  });
-
-  const result = await res.json();
-
-  if (!res.ok) {
-    throw new Error(result.detail || "Failed to update address");
-  }
-
-  return result;
-}
-
-export async function replaceShippingAddress(data) {
-  const res = await fetch(`${API_BASE}/shipping-address/me/`, {
-    method: "PUT",
-    headers: getAuthHeaders(),
-    body: JSON.stringify(data),
-  });
-
-  const result = await res.json();
-
-  if (!res.ok) {
-    throw new Error(result.detail || "Failed to replace address");
-  }
-
-  return result;
-}
-// ---------------- Consultant Request ----------------
-export async function submitConsultantRequest(data) {
-  const res = await fetch("https://jsonplaceholder.typicode.com/posts", {
     method: "POST",
     headers: {
+      ...getAuthHeaders(),
       "Content-Type": "application/json",
     },
     body: JSON.stringify(data),
   });
 
-  if (!res.ok) throw new Error("Failed to submit request");
+  if (!res.ok) throw new Error("Failed to create shipping address");
 
   return res.json();
+}
+
+
+// UPDATE SHIPPING ADDRESS
+export async function updateShippingAddress(data) {
+
+  const res = await fetch(`${API_BASE}/shipping-address/me/`, {
+    method: "PUT",
+    headers: {
+      ...getAuthHeaders(),
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!res.ok) throw new Error("Failed to update shipping address");
+
+  return res.json();
+}
+
+// GET USER REFERRALS
+export async function getReferrals() {
+  const res = await fetch(`${API_BASE}/user/referrals/`, {
+    method: "GET",
+    headers: getAuthHeaders(),
+  });
+
+  if (!res.ok) throw new Error("Failed to fetch referrals");
+
+  return res.json();
+}
+
+//  Consultant Request 
+export async function submitConsultantRequest(data) {
+  const res = await fetch("http://127.0.0.1:8000/api/consultant/request/", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("access")}`,
+    },
+    body: JSON.stringify(data),
+  });
+
+  const result = await res.json();
+
+  if (!res.ok) {
+    throw new Error(
+      result.mobile_number?.[0] || "Failed to submit request"
+    );
+  }
+
+  return result;
 }
