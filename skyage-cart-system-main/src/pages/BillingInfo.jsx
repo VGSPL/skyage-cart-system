@@ -5,6 +5,7 @@ import { createBankDetails, getBankDetails } from "../services/API";
 
 const BillingInfo = () => {
   const [showForm, setShowForm] = useState(true);
+  const [loading, setLoading] = useState(true);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -15,13 +16,15 @@ const BillingInfo = () => {
     type: "Customer",
   });
 
-  
   useEffect(() => {
     const fetchBankDetails = async () => {
       try {
+        setLoading(true);
+
         const data = await getBankDetails();
 
-        if (data) {
+       
+        if (data && Object.keys(data).length > 0) {
           setFormData({
             name: data.account_holder_name || "",
             account: data.account_number || "",
@@ -32,10 +35,14 @@ const BillingInfo = () => {
           });
 
           setShowForm(false);
+        } else {
+          setShowForm(true);
         }
       } catch (err) {
-        console.log("No bank details found");
+        console.log("No bank details found or API error:", err);
         setShowForm(true);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -43,13 +50,14 @@ const BillingInfo = () => {
   }, []);
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value } = e.target;
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
- 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -67,12 +75,36 @@ const BillingInfo = () => {
 
       alert("Bank Details Saved Successfully");
 
+      
+      const updated = await getBankDetails();
+
+      if (updated) {
+        setFormData({
+          name: updated.account_holder_name || "",
+          account: updated.account_number || "",
+          ifsc: updated.ifsc_code || "",
+          email: updated.email || "",
+          phone: updated.phone_number || "",
+          type: updated.contact_type || "Customer",
+        });
+      }
+
       setShowForm(false);
     } catch (err) {
       console.error(err);
       alert("Failed to save bank details");
     }
   };
+
+  
+  if (loading) {
+    return (
+      <div className="bank-page">
+        <h2 className="title">Bank Details</h2>
+        <p>Loading...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="bank-page">

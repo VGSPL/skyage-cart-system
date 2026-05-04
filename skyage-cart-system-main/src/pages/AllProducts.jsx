@@ -5,6 +5,7 @@ import { useLanguage } from '../contexts/LanguageProvider'
 import { useCart } from '../contexts/CartContext'
 
 export default function AllProducts() {
+
   const { t } = useLanguage()
   const { addToCart } = useCart()
   const location = useLocation()
@@ -13,12 +14,15 @@ export default function AllProducts() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
+ 
   useEffect(() => {
     let mounted = true
 
     getAllProducts()
       .then(data => {
-        if (mounted) setProducts(data)
+        if (mounted) {
+          setProducts(data?.results || [])
+        }
       })
       .catch(err => setError(err.message))
       .finally(() => mounted && setLoading(false))
@@ -44,7 +48,9 @@ export default function AllProducts() {
   const q = (params.get('search') || '').trim().toLowerCase()
   const category = (params.get('category') || '').trim().toLowerCase()
 
+  
   const filtered = (products || []).filter(p => {
+
     const name = (p.name || '').toLowerCase()
     const desc = (p.description || '').toLowerCase()
     const cat = (p.category?.name || '').toLowerCase()
@@ -53,22 +59,14 @@ export default function AllProducts() {
       ? name.includes(q) || desc.includes(q)
       : true
 
-    const categoryMap = {
-      electronics: "electronics",
-      clothing: "men's clothing",
-      womens: "women's clothing",
-      jewelery: "jewelery"
-    }
-
-    const realCategory = categoryMap[category]
-
-    const matchesCategory = realCategory
-      ? cat === realCategory
+    const matchesCategory = category
+      ? cat.includes(category)
       : true
 
     return matchesSearch && matchesCategory
   })
 
+ 
   const handleAddToCart = (product) => {
     addToCart({
       product_id: product.id,

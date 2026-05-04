@@ -7,11 +7,9 @@ export default function ProductsList() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // ADD TO CART FUNCTION
   const handleAddToCart = async (id) => {
     try {
-      const data = await addToCart(id, 1);
-      console.log("Cart Updated:", data);
+      await addToCart(id, 1);
       alert("Product added to cart");
     } catch (error) {
       console.error(error);
@@ -23,7 +21,10 @@ export default function ProductsList() {
     const fetchProducts = async () => {
       try {
         const data = await getAllProducts();
-        setProducts(data);
+
+        // ✅ FIX: ALWAYS use results
+        setProducts(data?.results || []);
+
       } catch (err) {
         console.error(err);
         setError(err.message);

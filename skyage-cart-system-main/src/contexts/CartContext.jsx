@@ -1,3 +1,177 @@
+// import { createContext, useContext, useState, useEffect, useMemo } from "react";
+// import {
+//   addToCart as apiAddToCart,
+//   getCart,
+//   updateCartItem,
+//   deleteCartItem,
+//   getCartTotal
+// } from "../services/API";
+
+// export const CartContext = createContext();
+
+// export function CartProvider({ children }) {
+
+//   const [cart, setCart] = useState([]);
+//   const [cartTotal, setCartTotal] = useState(0);
+//   const [loading, setLoading] = useState(true);
+
+//   const [customerInfo, setCustomerInfo] = useState(null);
+//   const [paymentMethod, setPaymentMethod] = useState("");
+
+
+//   const fetchCart = async () => {
+
+//     try {
+
+//       setLoading(true);
+
+//       const cartData = await getCart();
+//       setCart(cartData.items || []);
+
+//       const totalData = await getCartTotal();
+//       setCartTotal(totalData.total || 0);
+
+//     } catch (err) {
+
+//       console.error("Cart fetch error:", err);
+
+
+//       if (err.message === "401 Unauthorized") {
+//         localStorage.removeItem("access");
+//         setCart([]);
+//         setCartTotal(0);
+//         return;
+//       }
+
+//       setCart([]);
+//       setCartTotal(0);
+
+//     } finally {
+//       setLoading(false);
+//     }
+
+//   };
+
+
+//   useEffect(() => {
+
+//     const token = localStorage.getItem("access");
+
+//     if (!token) {
+//       setLoading(false);
+//       return;
+//     }
+
+//     fetchCart();
+
+//   }, []);
+
+
+//   const addToCartHandler = async (product) => {
+
+//     try {
+
+//       await apiAddToCart(product.id, 1);
+//       await fetchCart();
+
+//     } catch (err) {
+
+//       console.error("Add to cart error:", err);
+
+//     }
+
+//   };
+
+
+//   const increaseQty = async (productId) => {
+
+//     const item = cart.find(i => i.product.id === productId);
+//     if (!item) return;
+
+//     try {
+
+//       await updateCartItem(productId, item.quantity + 1);
+//       // fetchCart();
+//       await fetchCart();
+
+//     } catch (err) {
+
+//       console.error("Increase qty error:", err);
+
+//     }
+
+//   };
+
+
+//   const decreaseQty = async (productId) => {
+
+//     const item = cart.find(i => i.product.id === productId);
+//     if (!item) return;
+
+//     const newQty = item.quantity - 1;
+
+//     try {
+
+//       if (newQty <= 0) {
+//         await deleteCartItem(productId);
+//       } else {
+//         await updateCartItem(productId, newQty);
+//       }
+
+//       fetchCart();
+
+//     } catch (err) {
+
+//       console.error("Decrease qty error:", err);
+
+//     }
+
+//   };
+
+
+//   const removeItem = async (productId) => {
+
+//     try {
+
+//       await deleteCartItem(productId);
+//       fetchCart();
+
+
+//     } catch (err) {
+
+//       console.error("Remove item error:", err);
+
+//     }
+
+//   };
+
+
+//   const value = useMemo(() => ({
+//     cart,
+//     cartTotal,
+//     loading,
+//     addToCart: addToCartHandler,
+//     increaseQty,
+//     decreaseQty,
+//     removeItem,
+//     customerInfo,
+//     setCustomerInfo,
+//     paymentMethod,
+//     setPaymentMethod,
+//     refreshCart: fetchCart
+//   }), [cart, cartTotal, loading, customerInfo, paymentMethod]);
+
+//   return (
+//     <CartContext.Provider value={value}>
+//       {children}
+//     </CartContext.Provider>
+//   );
+
+// }
+
+// export const useCart = () => useContext(CartContext);
+
+
 import { createContext, useContext, useState, useEffect, useMemo } from "react";
 import {
   addToCart as apiAddToCart,
@@ -18,23 +192,25 @@ export function CartProvider({ children }) {
   const [customerInfo, setCustomerInfo] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState("");
 
-
+ 
   const fetchCart = async () => {
 
     try {
-
       setLoading(true);
 
       const cartData = await getCart();
+      console.log(" CART DATA:", cartData);
+
       setCart(cartData.items || []);
 
       const totalData = await getCartTotal();
+      console.log(" TOTAL DATA:", totalData);
+
       setCartTotal(totalData.total || 0);
 
     } catch (err) {
 
-      console.error("Cart fetch error:", err);
-
+      console.error(" Cart fetch error:", err);
 
       if (err.message === "401 Unauthorized") {
         localStorage.removeItem("access");
@@ -49,9 +225,7 @@ export function CartProvider({ children }) {
     } finally {
       setLoading(false);
     }
-
   };
-
 
   useEffect(() => {
 
@@ -66,47 +240,69 @@ export function CartProvider({ children }) {
 
   }, []);
 
-
+  
   const addToCartHandler = async (product) => {
 
     try {
 
-      await apiAddToCart(product.id, 1);
+      console.log(" ADD TO CART CLICKED");
+      console.log("PRODUCT OBJECT:", product);
+
+     
+      const productId = product?.id || product?.product_id;
+
+      if (!productId) {
+        throw new Error(" Product ID missing (id / product_id not found)");
+      }
+
+      console.log("✔ FINAL PRODUCT ID:", productId);
+
+      const response = await apiAddToCart(Number(productId), 1);
+
+      console.log("✔ ADD TO CART RESPONSE:", response);
+
       await fetchCart();
 
     } catch (err) {
 
-      console.error("Add to cart error:", err);
+      console.error(" Add to cart error:", err);
 
     }
-
   };
 
-
+ 
   const increaseQty = async (productId) => {
 
+    console.log("➕ INCREASE QTY:", productId);
+
     const item = cart.find(i => i.product.id === productId);
-    if (!item) return;
+
+    if (!item) {
+      console.error(" Item not found in cart");
+      return;
+    }
 
     try {
 
       await updateCartItem(productId, item.quantity + 1);
-      // fetchCart();
       await fetchCart();
 
     } catch (err) {
-
-      console.error("Increase qty error:", err);
-
+      console.error(" Increase qty error:", err);
     }
-
   };
 
-
+  
   const decreaseQty = async (productId) => {
 
+    console.log("➖ DECREASE QTY:", productId);
+
     const item = cart.find(i => i.product.id === productId);
-    if (!item) return;
+
+    if (!item) {
+      console.error(" Item not found in cart");
+      return;
+    }
 
     const newQty = item.quantity - 1;
 
@@ -118,34 +314,29 @@ export function CartProvider({ children }) {
         await updateCartItem(productId, newQty);
       }
 
-      fetchCart();
+      await fetchCart();
 
     } catch (err) {
-
-      console.error("Decrease qty error:", err);
-
+      console.error(" Decrease qty error:", err);
     }
-
   };
 
-
+  
   const removeItem = async (productId) => {
+
+    console.log("🗑 REMOVE ITEM:", productId);
 
     try {
 
       await deleteCartItem(productId);
-      fetchCart();
-
+      await fetchCart();
 
     } catch (err) {
-
-      console.error("Remove item error:", err);
-
+      console.error(" Remove item error:", err);
     }
-
   };
 
-
+  
   const value = useMemo(() => ({
     cart,
     cartTotal,
@@ -166,7 +357,6 @@ export function CartProvider({ children }) {
       {children}
     </CartContext.Provider>
   );
-
 }
 
 export const useCart = () => useContext(CartContext);

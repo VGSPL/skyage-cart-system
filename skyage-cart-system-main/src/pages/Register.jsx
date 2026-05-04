@@ -13,7 +13,7 @@ const Register = () => {
     password: '',
     confirm_password: '',
     pan_number: '',
-    referral_code: ''   
+    referral_code: ''
   });
 
   const [error, setError] = useState('');
@@ -29,50 +29,61 @@ const Register = () => {
   };
 
   const handleSubmit = async (e) => {
-
     e.preventDefault();
+
+    console.log(" Register button clicked");
+
     setError('');
-    setLoading(true);
 
     const nameParts = formData.fullName.trim().split(' ');
     const firstName = nameParts[0];
     const lastName = nameParts.length > 1 ? nameParts.slice(1).join(' ') : 'User';
 
     if (!formData.pan_number) {
+      console.warn(" PAN missing");
       setError('PAN Number is required');
-      setLoading(false);
       return;
     }
 
     if (formData.password !== formData.confirm_password) {
+      console.warn(" Password mismatch");
       setError('Passwords do not match');
-      setLoading(false);
       return;
     }
 
-    try {
+    setLoading(true);
 
-      await registerUser({
+    try {
+      const payload = {
         email: formData.email,
         first_name: firstName,
         last_name: lastName,
         password: formData.password,
         confirm_password: formData.confirm_password,
         unique_id: formData.pan_number,
-        referral_code: formData.referral_code  
-      });
+        referral_code: formData.referral_code
+      };
 
-      setLoading(false);
+      console.log(" Calling Register API...");
+      console.log(" Payload:", payload);
+
+      const data = await registerUser(payload);
+
+      console.log(" Register Success:", data);
+
+      alert("Registration Successful ");
 
       navigate("/login");
 
     } catch (err) {
+      console.error(" Register Error:", err);
 
       setError(err.message || "Registration failed");
+
+    } finally {
       setLoading(false);
-
+      console.log(" Loading finished");
     }
-
   };
 
   return (
@@ -139,7 +150,6 @@ const Register = () => {
               />
             </div>
 
-           
             <div className="form-group">
               <label>Referral Code (Optional)</label>
               <input
@@ -193,10 +203,6 @@ const Register = () => {
 };
 
 export default Register;
-
-
-
-
 
 
 

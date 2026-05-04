@@ -45,7 +45,8 @@ function AppContent() {
         location.pathname === "/login" ||
         location.pathname === "/register" ||
         location.pathname === "/forgot-password" ||
-        location.pathname === "/reset-password" ||
+         location.pathname === "/reset-password" ||
+        
         location.pathname === "/welcome-letter"
 
 
@@ -112,8 +113,10 @@ function AppContent() {
                 <Route path="/welcome-letter" element={<WelcomeLetter />} />
 
                 <Route path="/forgot-password" element={<ForgotPassword />} />
-                <Route path="/reset-password" element={<ResetPassword />} />
+                 {/* <Route path="/reset-password" element={<ResetPassword />} />  */}
 
+                 <Route path="/reset-password/:uid/:token" element={<ResetPassword />} />
+                
                 {/* CHECKOUT FLOW */}
                 <Route path="/checkout/info" element={<CheckoutInfo />} />
                 <Route path="/checkout/payment" element={<CheckoutPayment />} />

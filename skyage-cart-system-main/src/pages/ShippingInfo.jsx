@@ -5,19 +5,21 @@ import {
   createShippingAddress,
   updateShippingAddress
 } from "../services/API";
-import "./ShippingInfo.css";
+import './ShippingInfo.css';
 
 export default function ShippingInfo() {
   const navigate = useNavigate();
 
-  const [address, setAddress] = useState({
+  const [addresses, setAddresses] = useState([]);
+  const [existingAddress, setExistingAddress] = useState(null);
+
+  const [newAddress, setNewAddress] = useState({
     label: "",
     fullAddress: "",
     phone: ""
   });
 
   const [errors, setErrors] = useState({});
-  const [loading, setLoading] = useState(false);
 
   
   useEffect(() => {
@@ -27,114 +29,136 @@ export default function ShippingInfo() {
   const fetchAddress = async () => {
     try {
       const data = await getShippingAddress();
+
       if (data) {
-        setAddress(data);
+        setExistingAddress(data);
+
+       
+        setAddresses([
+          {
+            id: data.id,
+            label: data.full_name,
+            fullAddress: data.address1,
+            phone: data.phone
+          }
+        ]);
       }
     } catch (err) {
-      console.log("No existing address or error:", err.message);
+      console.log("No address:", err.message);
     }
   };
 
   
-  const validate = () => {
+  const handleAddAddress = async () => {
     const newErrors = {};
 
-    if (!address.label) newErrors.label = "Label required";
-    if (!address.fullAddress) newErrors.fullAddress = "Address required";
-    if (!address.phone) newErrors.phone = "Phone required";
+    if (!newAddress.fullAddress) newErrors.fullAddress = "Address required";
+    if (!newAddress.phone) newErrors.phone = "Phone required";
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  
-  const handleSave = async () => {
-    if (!validate()) return;
-
-    setLoading(true);
-
-    try {
-      const existing = await getShippingAddress();
-
-      if (existing) {
-        await updateShippingAddress(address);
-      } else {
-        await createShippingAddress(address);
-      }
-
-      alert("Address saved successfully!");
-      navigate(-1);
-    } catch (err) {
-      console.error(err);
-      alert("Failed to save address");
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
     }
 
-    setLoading(false);
+    try {
+      
+      const payload = {
+        full_name: newAddress.label || "User",
+        email: "test@gmail.com",
+        phone: newAddress.phone,
+
+        address1: newAddress.fullAddress,
+        address2: "",
+
+        city: "Pune",
+        state: "MH",
+        zipcode: "411001",
+        country: "India"
+      };
+
+      if (existingAddress) {
+        await updateShippingAddress(payload);
+      } else {
+        await createShippingAddress(payload);
+      }
+
+      alert(" Address saved!");
+
+     
+      fetchAddress();
+
+      
+      setNewAddress({ label: "", fullAddress: "", phone: "" });
+      setErrors({});
+
+    } catch (err) {
+      console.error("Save error:", err);
+      alert(" Failed to save address");
+    }
   };
 
   return (
     <div className="shipping-page">
       <div className="shipping-container">
-        <h2>Shipping Address</h2>
-        <p>Add or update your delivery address</p>
+        <h2>Shipping Addresses</h2>
+        <p>Add and manage your delivery addresses</p>
 
         <div className="form-card">
 
           {/* Label */}
           <input
             type="text"
-            placeholder="Label (Home, Work...)"
-            value={address.label}
-            onChange={(e) =>
-              setAddress({ ...address, label: e.target.value })
-            }
+            placeholder="Label (Home, Work…)"
+            value={newAddress.label}
+            onChange={e => setNewAddress({ ...newAddress, label: e.target.value })}
           />
-          {errors.label && <div className="input-error">{errors.label}</div>}
 
-          {/* Full Address */}
+          {/* Address */}
           <input
             type="text"
             placeholder="Full Address"
-            value={address.fullAddress}
-            onChange={(e) =>
-              setAddress({ ...address, fullAddress: e.target.value })
-            }
+            value={newAddress.fullAddress}
+            onChange={e => setNewAddress({ ...newAddress, fullAddress: e.target.value })}
           />
-          {errors.fullAddress && (
-            <div className="input-error">{errors.fullAddress}</div>
-          )}
+          {errors.fullAddress && <div className="input-error">{errors.fullAddress}</div>}
 
           {/* Phone */}
           <input
             type="text"
             placeholder="Phone Number"
-            value={address.phone}
-            onChange={(e) =>
-              setAddress({ ...address, phone: e.target.value })
-            }
+            value={newAddress.phone}
+            onChange={e => setNewAddress({ ...newAddress, phone: e.target.value })}
           />
           {errors.phone && <div className="input-error">{errors.phone}</div>}
 
           <div className="form-buttons">
-            <button
-              className="btn add"
-              onClick={handleSave}
-              disabled={loading}
-            >
-              {loading ? "Saving..." : "Save Address"}
+            <button className="btn add" onClick={handleAddAddress}>
+              Add Address
             </button>
 
             <button className="btn cancel" onClick={() => navigate(-1)}>
               Back
             </button>
           </div>
+
         </div>
+
+       
+        {addresses.length > 0 && (
+          <div style={{ marginTop: "20px" }}>
+            <h3>Saved Address</h3>
+
+            {addresses.map(addr => (
+              <div key={addr.id} className="form-card">
+                <p><b>{addr.label}</b></p>
+                <p>{addr.fullAddress}</p>
+                <p>{addr.phone}</p>
+              </div>
+            ))}
+          </div>
+        )}
+
       </div>
     </div>
   );
 }
-
-
-
-
-

@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { getAllProducts } from '../services/API'
+import { getSaleProducts } from '../services/API'   
 import { useLanguage } from '../contexts/LanguageProvider'
 import { useCart } from "../contexts/CartContext";
 
-export default function HotSalesClothing(){
+export default function HotSalesClothing() {
 
   const { t } = useLanguage()
   const { addToCart } = useCart()
@@ -16,33 +16,27 @@ export default function HotSalesClothing(){
   useEffect(() => {
     let mounted = true
 
-    getAllProducts()
+    getSaleProducts()   
       .then(data => {
-        if (mounted) {
 
-          const clothing = (data || []).filter(
-            p => (p.category?.name || '').toLowerCase() === 'clothing'
-          )
+        if (!mounted) return
 
-          setItems(clothing)
-        }
+      
+        const clothing = (data || []).filter(
+          p => (p.category?.name || '').toLowerCase() === 'clothing'
+        )
+
+        setItems(clothing)
       })
       .catch(err => setError(err.message))
-      .finally(() => mounted && setLoading(false))
+      .finally(() => {
+        if (mounted) setLoading(false)
+      })
 
-    return () => mounted = false
+    return () => {
+      mounted = false
+    }
   }, [])
-
-  if (loading)
-    return <div className="container mx-auto py-6">{t('loadingProducts')}</div>
-
-  if (error)
-    return <div className="container mx-auto py-6 text-red-600">{t('errorPrefix')} {error}</div>
-
-  if (items.length === 0) return null
-
-  const promoImage = items?.[0]?.profile_image || ''
-  const rightItems = items.slice(1, 11)
 
   const handleAddToCart = (product) => {
     addToCart({
@@ -51,18 +45,28 @@ export default function HotSalesClothing(){
     })
   }
 
-  return (
+  if (loading)
+    return <div className="container mx-auto py-6">{t('loadingProducts')}</div>
 
+  if (error)
+    return <div className="container mx-auto py-6 text-red-600">{t('errorPrefix')} {error}</div>
+
+  if (!items.length) return null
+
+  const promoImage = items?.[0]?.profile_image || ''
+  const rightItems = items.slice(1, 11)
+
+  return (
     <section className="container mx-auto py-6 bg-white">
 
       <div className="flex items-center justify-between mb-4">
 
         <h2 className="text-lg font-semibold">
-          Hot Sales on Clothing
+          Hot Sale Products
         </h2>
 
         <Link
-          to="/products?category=clothing"
+          to="/products?sale=true"
           className="text-sm text-[#147E9E]"
         >
           {t('viewAll')}
@@ -75,13 +79,13 @@ export default function HotSalesClothing(){
         {/* PROMO */}
         <div className="md:col-span-2 flex items-center justify-center">
 
-          <Link to="/products?category=clothing" className="block">
+          <Link to="/products?sale=true" className="block">
 
             <div className="w-full h-[400px] rounded overflow-hidden relative shadow-lg">
 
               <img
                 src={promoImage}
-                alt="Hot Sales Clothing"
+                alt="Hot Sale"
                 className="w-full h-full object-cover"
               />
 
@@ -90,7 +94,7 @@ export default function HotSalesClothing(){
                 <div className="bg-white/90 px-4 py-2 rounded">
 
                   <span className="text-sm font-semibold">
-                    See All Clothing
+                    View All Sale
                   </span>
 
                 </div>
@@ -114,7 +118,7 @@ export default function HotSalesClothing(){
             >
 
               <img
-                src={p.profile_image}
+                src={p.profile_image || "https://via.placeholder.com/150"}
                 alt={p.name}
                 className="h-24 object-contain mb-2"
               />
@@ -123,8 +127,9 @@ export default function HotSalesClothing(){
                 {p.name}
               </h3>
 
+           
               <p className="mt-auto text-[#147E9E] font-semibold">
-                ₹{p.price}
+                ₹{p.sale_price || p.price}
               </p>
 
               <Link
@@ -150,6 +155,5 @@ export default function HotSalesClothing(){
       </div>
 
     </section>
-
   )
 }

@@ -25,3 +25,4 @@ function CartItem({ item, increaseQty, decreaseQty, removeItem }) {
 }
 
 export default CartItem;
+

@@ -6,6 +6,7 @@ export default function Cart() {
   const navigate = useNavigate();
 
   // const items = cart?.items || [];
+  console.log("CART RESPONSE:", cart);
      const items = cart || [];
 
   if (!items || items.length === 0) {
@@ -95,3 +96,14 @@ export default function Cart() {
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
+
+

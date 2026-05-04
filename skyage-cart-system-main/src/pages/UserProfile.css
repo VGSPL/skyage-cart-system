@@ -216,3 +216,19 @@ color:#555;
 .bottom button:hover{
     background:#e6e6e6;
 }
+.logout-btn {
+  display: block;
+  margin: 15px auto;
+  padding: 6px 12px;
+  background: #ff4d4f;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.logout-btn:hover {
+  background: #d9363e;   
+  transform: scale(1.05);
+}

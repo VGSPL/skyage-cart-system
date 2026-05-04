@@ -22,7 +22,7 @@ export default function FeaturedProducts() {
         const data = await getFeaturedProducts()
         if (mounted) setItems(data || [])
       } catch (err) {
-        setError(err.message)
+        if (mounted) setError(err.message)
       } finally {
         if (mounted) setLoading(false)
       }
@@ -30,12 +30,9 @@ export default function FeaturedProducts() {
 
     fetchProducts()
 
-   
-    // const interval = setInterval(fetchProducts, 5000)
 
     return () => {
       mounted = false
-      clearInterval(interval)
     }
   }, [])
 
@@ -66,7 +63,8 @@ export default function FeaturedProducts() {
       ? `${t('searchResultsFor')} "${category}"`
       : t('featuredTitle')
 
-  const promoImage = items?.[0]?.profile_image || ''
+ 
+  const promoImage = items?.[0]?.profile_image || null
 
   const handleAddToCart = (product) => {
     addToCart({
@@ -85,8 +83,15 @@ export default function FeaturedProducts() {
 
       <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
 
+      
         <div className="md:col-span-2">
-          <img src={promoImage} className="w-full h-full object-cover rounded" />
+          {promoImage && (
+            <img
+              src={promoImage}
+              className="w-full h-full object-cover rounded"
+              alt="Promo"
+            />
+          )}
         </div>
 
         <div className="md:col-span-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -94,7 +99,18 @@ export default function FeaturedProducts() {
           {filtered.map(p => (
             <article key={p.id} className="bg-white shadow rounded p-3">
 
-              <img src={p.profile_image} className="h-20 mx-auto object-contain" />
+              
+              {p.profile_image ? (
+                <img
+                  src={p.profile_image}
+                  className="h-20 mx-auto object-contain"
+                  alt={p.name}
+                />
+              ) : (
+                <div className="h-20 flex items-center justify-center text-gray-400 text-xs">
+                  No Image
+                </div>
+              )}
 
               <h3 className="text-sm mt-2">{p.name}</h3>
 
@@ -119,7 +135,6 @@ export default function FeaturedProducts() {
     </section>
   )
 }
-
 
 
 

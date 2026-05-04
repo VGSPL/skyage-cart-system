@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { getAllProducts } from '../services/API'
+import { getRecentProducts } from '../services/API'   
 import { useLanguage } from '../contexts/LanguageProvider'
 import { useCart } from "../contexts/CartContext";
 
@@ -16,7 +16,7 @@ export default function HotSalesElectronics(){
   useEffect(() => {
     let mounted = true
 
-    getAllProducts()
+    getRecentProducts()  
       .then(data => {
         if (mounted) {
 
@@ -52,7 +52,7 @@ export default function HotSalesElectronics(){
     <section className="container mx-auto py-6 bg-[#F3EED9]">
 
       <h2 className="text-lg font-semibold mb-4">
-        Hot Sales on Electronics
+        Recent Electronics Products   
       </h2>
 
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4">

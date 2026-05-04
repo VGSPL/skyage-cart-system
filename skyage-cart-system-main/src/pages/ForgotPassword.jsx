@@ -1,36 +1,42 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { resetPassword } from "../services/API";
 import "./Login.css";
 
 const ForgotPassword = () => {
 
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const navigate = useNavigate();
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const user = JSON.parse(localStorage.getItem("user"));
 
     if (!email.trim()) {
       alert("Please enter your email");
       return;
     }
-    if (user && user.email === email) {
+
+    setLoading(true);
+    setMessage("");
+
+    try {
+      await resetPassword(email);
+
+      const successMsg = `Password reset link sent to ${email}. Please check your email and click the reset link to set a new password.`;
+      alert(successMsg);
+      setMessage(successMsg);
 
 
-      localStorage.setItem("resetEmail", email);
+    } catch (err) {
 
-      alert(`Password reset link sent to ${email}`);
+      const errorMsg = err?.message || "Email not found";
 
-      navigate("/reset-password");
+      alert(errorMsg);
+      setMessage(errorMsg);
 
-    } else {
-
-      alert("Email not found");
-
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -48,36 +54,27 @@ const ForgotPassword = () => {
         className="auth-form-container forgot-card"
         style={{ maxWidth: "400px", width: "100%" }}
       >
-        <div
-          style={{
-            padding: "2rem",
-            borderRadius: "10px",
+        <div style={{ padding: "2rem", borderRadius: "10px" }}>
 
-          }}
-        >
           <h2 style={{ textAlign: "center", marginBottom: "0.5rem" }}>
             Forgot Password
           </h2>
 
-          <p
-            style={{
-              textAlign: "center",
-              marginBottom: "1.5rem",
-              fontSize: "0.9rem",
-              color: "#555"
-            }}
-          >
+          <p style={{
+            textAlign: "center",
+            marginBottom: "1.5rem",
+            fontSize: "0.9rem",
+            color: "#555"
+          }}>
             Enter your email to reset your password.
           </p>
 
           {message && (
-            <div
-              style={{
-                marginBottom: "1rem",
-                textAlign: "center",
-                color: message.includes("sent") ? "green" : "red"
-              }}
-            >
+            <div style={{
+              marginBottom: "1rem",
+              textAlign: "center",
+              color: message.includes("sent") ? "green" : "red"
+            }}>
               {message}
             </div>
           )}
@@ -103,6 +100,7 @@ const ForgotPassword = () => {
 
             <button
               type="submit"
+              disabled={loading}
               className="auth-btn"
               style={{
                 width: "100%",
@@ -111,10 +109,11 @@ const ForgotPassword = () => {
                 backgroundColor: "#147E9E",
                 color: "#fff",
                 fontWeight: "bold",
-                cursor: "pointer"
+                cursor: "pointer",
+                opacity: loading ? 0.7 : 1
               }}
             >
-              Send Reset Link
+              {loading ? "Sending..." : "Send Reset Link"}
             </button>
           </form>
 
@@ -131,6 +130,7 @@ const ForgotPassword = () => {
               Sign in
             </Link>
           </div>
+
         </div>
       </div>
     </div>
@@ -138,10 +138,3 @@ const ForgotPassword = () => {
 };
 
 export default ForgotPassword;
-
-
-
-
-
-
-

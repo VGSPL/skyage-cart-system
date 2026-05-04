@@ -1,84 +1,103 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
+import { resetPasswordConfirm } from "../services/API";
 import "./Login.css";
 
 const ResetPassword = () => {
 
+  const { uid, token } = useParams();
+
   const [password, setPassword] = useState("");
+  const [message, setMessage] = useState("");
+
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!password.trim()) {
-      alert("Please enter new password");
+    console.log("UID:", uid);
+    console.log("TOKEN:", token);
+
+    if (!uid || !token) {
+      const msg = "Invalid reset link. Please check your email link again.";
+      alert(msg);
+      setMessage(msg);
       return;
     }
-    const user = JSON.parse(localStorage.getItem("user"));
-    const resetEmail = localStorage.getItem("resetEmail");
 
-    if (user && user.email === resetEmail) {
+    if (!password || password.length < 8) {
+      const msg = "Password must be at least 8 characters.";
+      alert(msg);
+      setMessage(msg);
+      return;
+    }
 
-      user.password = password;
+    try {
+      await resetPasswordConfirm(uid, token, password);
 
-      localStorage.setItem("user", JSON.stringify(user));
+      const successMsg =
+        "Password updated successfully. You can now login with your new password.";
 
-      localStorage.removeItem("resetEmail");
+      alert(successMsg);
+      setMessage(successMsg);
 
-      alert("Password updated successfully");
+     
+      setTimeout(() => {
+        navigate("/login");
+      }, 1500);
 
-      navigate("/login");
+    } catch (err) {
 
-    } else {
+      console.log(err);
 
-      alert("User not found");
+      const errorMsg =
+        err?.message ||
+        "Password reset failed. Please try again.";
 
+      alert(errorMsg);
+      setMessage(errorMsg);
     }
   };
 
   return (
-    <div
-      className="auth-wrapper"
+    <div className="auth-wrapper">
 
-    >
+      <div className="auth-form-container">
 
-      <div
-        className="auth-form-container"
-      >
+        <div className="auth-form-content">
 
-        <div
-          className="auth-form-content"
-        >
-
-          <h2
-            style={{
-              textAlign: "center",
-              marginBottom: "0.5rem"
-            }}
-          >
+          <h2 style={{
+            textAlign: "center",
+            marginBottom: "0.5rem"
+          }}>
             Reset Password
           </h2>
 
-          <p
-            style={{
-              textAlign: "center",
-              marginBottom: "1.5rem",
-              fontSize: "0.9rem",
-              color: "#555"
-            }}
-          >
+          <p style={{
+            textAlign: "center",
+            marginBottom: "1.5rem",
+            fontSize: "0.9rem",
+            color: "#555"
+          }}>
             Enter your new password
           </p>
+
+          {message && (
+            <div style={{
+              marginBottom: "1rem",
+              textAlign: "center",
+              color: message.includes("successfully") ? "green" : "red"
+            }}>
+              {message}
+            </div>
+          )}
 
           <form onSubmit={handleSubmit}>
 
             <div
               className="form-group"
-              style={{
-                marginBottom: "1rem"
-              }}
+              style={{ marginBottom: "1rem" }}
             >
-
               <label>New Password</label>
 
               <input
@@ -94,7 +113,6 @@ const ResetPassword = () => {
                   border: "1px solid #ccc"
                 }}
               />
-
             </div>
 
             <button
@@ -115,11 +133,29 @@ const ResetPassword = () => {
 
           </form>
 
+          <div
+            className="auth-footer"
+            style={{
+              marginTop: "1rem",
+              textAlign: "center",
+              fontSize: "0.85rem"
+            }}
+          >
+            Remembered your password?{" "}
+            <Link to="/login" style={{ color: "#147E9E" }}>
+              Sign in
+            </Link>
+          </div>
+
         </div>
       </div>
-
     </div>
   );
 };
 
 export default ResetPassword;
+
+
+
+
+
